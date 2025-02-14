@@ -39,10 +39,13 @@
         </div>
     </nav>
     
+
          <!-- Register Form-->
         <div class="register_container" id="signup">
             <h1 class="form-title">SignUp</h1>
-            <form method="post" action="register.php">
+            <form method="post" action="">
+                <div id="signup_message" class="messageDiv" style="display: none;">
+                </div>
                 <div class="input-group">
                     <i class="fas fa-user"></i>
                     <input type="text" name="fName" id="fName" placeholder="First Name">
@@ -59,7 +62,7 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" id="password" placeholder="Password" required>
                 </div>
-                <input type="submit" class="btn" value="Sign Up" name="signup">
+                <input type="submit" class="btn" value="Sign Up" name="signup" id="submit_btn">
             </form>
             <p class="or">
                 -------or-------
@@ -70,37 +73,7 @@
             </div>
             <div class="links">
                 <p>Already Have Account?</p>
-                <button id="login_button">Login</button>
+                <a href="login.html">Login</a>
             </div>
         </div>
-        
-        <!-- Login Form-->
-        <div class="register_container" id="login" style="display:none;">
-            <h1 class="form-title">Login</h1>
-            <form method="post" action="register.php">
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" id="email" placeholder="Email" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder="Password" required>
-                </div>
-                <p class="recover">
-                    <a href="#"> Recover Password</a>
-                </p>
-                <input type="submit" class="btn" value="Login" name="login">
-            </form>
-            <p class="or">
-                -------or-------
-            </p>
-            <div class="icons">
-                <i class="fab fa-google"></i>
-                <i class="fab fa-facebook"></i>
-            </div>
-            <div class="links">
-                <p>Don't Have Account?</p>
-                <button href="signup.php" id="signup_button">Sign Up</button>
-            </div>
-        </div>
-        <script src="app.js"></script>
+        <script type="module" defer src="app.js"></script>

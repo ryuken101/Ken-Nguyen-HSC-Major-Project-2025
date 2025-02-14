@@ -488,10 +488,16 @@ input::placeholder {
 
 }
 
+
 .btn:hover {
     background-color: #d7f6fa;
 }
 
+.btn:active,
+.btn:focus {
+    background: white;
+    color: #7ec4cf;
+}
 .or {
     font-size: 1.1rem;
     margin-top: 0.5rem;
@@ -618,4 +624,25 @@ input::placeholder {
     z-index: 999;
 }
 
-  
+
+.messageDiv {
+    background-color: white;
+    color: #7ec4cf;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    opacity: 0;
+    animation: fadeOut 7s forward;
+
+}
+
+/* User */ 
+.userpage_container {
+    background-color: #7ec4cf;
+    color: white;
+    padding: 50px 100px;
+    margin: 10px;
+    border-radius: 20px;
+    font-size: 4rem;
+}

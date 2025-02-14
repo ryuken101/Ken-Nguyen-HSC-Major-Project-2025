@@ -40,18 +40,20 @@
         <!-- Login Form-->
         <div class="register_container" id="login">
             <h1 class="form-title">Login</h1>
+            <form method="post" action="">
+                <div id="login_message" class="messageDiv" style="display: none;"></div>
                 <div class="input-group">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" id="email" placeholder="Email" required>
+                    <input type="email" name="email" id="login_email" placeholder="Email" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="login_password" placeholder="Password" required>
                 </div>
                 <p class="recover">
                     <a href="#"> Recover Password</a>
                 </p>
-                <input type="submit" class="btn" value="Login" name="Login">
+                <input type="submit" class="btn" value="Login" name="Login" id="login_submit_btn">
             </form>
             <p class="or">
                 -------or-------
@@ -65,4 +67,4 @@
                 <a href="signup.html">Sign Up</a>
             </div>
         </div>
-    <script src="app.js"></script>
+    <script type="module" src="app.js" defer></script>
