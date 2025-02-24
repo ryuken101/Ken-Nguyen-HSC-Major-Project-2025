@@ -351,21 +351,36 @@
 
 /* Services Section 1 */
 .services_container {
-    padding: 300px 20px;
-    background: #7ec4cf;
-    opacity: 0.5;
+    padding: 150px 20px;
+    background: #accddc;
     display: flex;
-    border-radius: 25px; 
-    margin-right: 30px;
-    margin-left: 30px;
+    border-radius: 55px; 
+    margin-right: 40px;
+    margin-left: 40px;
+    margin-bottom: 30px;
     
 }
 
 .services h1 {
-    background-color: white;
-    color: #7ec4cf;
+    color: white;
     margin-left: 30px;
+    font-size: 2.5rem;
 }
+
+.services h2 {
+    color: white;
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+/* .content1_container {
+    background-color: white;
+    display: flex;
+    padding: 150px 150px;
+    border-radius: 20px; 
+    margin-left: 1000px;
+    margin-bottom: 100px;
+} /*
 
 /* Services Section 2 */
 .services_container2 {
@@ -569,45 +584,79 @@ input::placeholder {
 
 /* About Page */
 
-.about {
+.company {
     background-color: white;
 }
 
-.about_container {
-    padding: 300px 20px;
-    background: #7ec4cf;
-    opacity: 0.5;
+.company_container {
+    padding: 120px 20px;
+    background: #f5d3a3;
     display: flex;
-    border-radius: 25px; 
-    margin-right: 30px;
-    margin-left: 30px;
+    border-radius: 35px; 
+    margin-right: 40px;
+    margin-left: 40px;
+    margin-top: 60px;
 }
 
-.about h1 {
+.company h1 {
     text-align: center;
-    color: #7ec4cf;
+    color: #f5d3a3;
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
 
-.logo_container {
-    padding: 50px 20px;
+.Clogo_container {
+    padding: 20px 10px;
     background: white;
     display: flex;
-    border-radius: 25px; 
-    margin-right: 30px;
-    margin-left: 200px;
+    border-radius: 50px; 
+    margin-left: 950px;
 }
 
 .company_logo {
     height: 300px; /* Adjust height proportionally */
     width: auto; /* Maintain aspect ratio */
     display: block;
-    margin-left: 200px;
+    margin-left: 20px;
     background: white;
 }
 
+.project {
+    background-color: white;
+}
 
+.project_container {
+    padding: 120px 20px;
+    background: #7ec4cf;
+    display: flex;
+    border-radius: 35px; 
+    margin-right: 40px;
+    margin-left: 40px;
+    margin-top: 60px;
+}
+
+.project h1 {
+    text-align: center;
+    color: #7ec4cf;
+    margin-top: 12rem;
+    margin-bottom: 1rem;
+}
+
+.Plogo_container {
+    padding: 20px 10px;
+    background: white;
+    display: flex;
+    border-radius: 50px; 
+    margin-left: 50px;
+}
+
+.project_logo { 
+    height: 300px; /* Adjust height proportionally */
+    width: auto; /* Maintain aspect ratio */
+    display: block;
+    margin-left: 20px;
+    background: white;
+}
 /* Userpage */
 
 /* User Navbar Section */
@@ -638,11 +687,127 @@ input::placeholder {
 }
 
 /* User */ 
-.userpage_container {
+.header {
     background-color: #7ec4cf;
-    color: white;
-    padding: 50px 100px;
-    margin: 10px;
-    border-radius: 20px;
-    font-size: 4rem;
+    width: 100%;
+    height: 110px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }
+
+.search-bar {
+    flex: 1;
+    max-width: 600px;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    height: 70px;
+    background-color: white;
+    color: white;
+    margin-left: 400px;
+}
+
+.search-bar:focus {
+    background-color: white; /* Ensures it stays white */
+    color: grey; /* Ensures text remains visible */
+    border: 1px solid #7ec4cf; /* Optional: Highlighted border */
+    outline: none; /* Removes browser focus outline */
+}
+
+.search-bar::placeholder {
+    color: grey;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.user-icon {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    left: 100px;
+}
+
+.sidebar {
+    background-color: #7ec4cf;
+    width: 250px;
+    height: 100vh;
+    padding-top: 120px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 15px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 50px; /* Increases vertical spacing */
+}
+
+.sidebar li img {
+    width: 400px;
+    height: 400px;
+    object-fit: contain;
+    position: relative;
+    left: -170px;
+}
+
+.sidebar li span {
+    margin-left: 5px
+}
+
+.sidebar li.active {
+    background: white;
+    color: #7ec4cf;
+    border-radius: 10px;
+ 
+}
+
+.content {
+    margin-left: 270px;
+    margin-top: 120px;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.top-content {
+    background: lightgray;
+    height: 300px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+}
+
+.bottom-content {
+    display: flex;
+    gap: 20px;
+}
+
+.box {
+    background: lightgray;
+    height: 400px;
+    flex: 1;
+    border-radius: 30px;
+    width: 100px;
+}
+
+    
