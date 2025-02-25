@@ -756,30 +756,37 @@ input::placeholder {
 .sidebar li {
     display: flex;
     align-items: center;
-    height: 50px;
+    height: 100px;
     padding: 15px;
     font-size: 18px;
+    font-weight: bold;
     color: white;
     cursor: pointer;
-    margin-bottom: 50px; /* Increases vertical spacing */
+    margin-bottom: 40px; /* Increases vertical spacing */
+    margin-left: 30px;
+    margin-right: 40px;
 }
 
 .sidebar li img {
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
     object-fit: contain;
-    position: relative;
-    left: -170px;
+    position: absolute;
+    left: 20px;
 }
 
 .sidebar li span {
-    margin-left: 5px
+    text-align: left;
+    position: relative;
+    left: 100px;
+    font-weight: bold;
+ 
 }
 
 .sidebar li.active {
     background: white;
     color: #7ec4cf;
-    border-radius: 10px;
+    border-radius: 40px;
  
 }
 
@@ -793,8 +800,9 @@ input::placeholder {
 .top-content {
     background: lightgray;
     height: 300px;
-    border-radius: 30px;
+    border-radius: 70px;
     margin-bottom: 20px;
+    margin-top: 60px;
 }
 
 .bottom-content {
@@ -806,8 +814,10 @@ input::placeholder {
     background: lightgray;
     height: 400px;
     flex: 1;
-    border-radius: 30px;
+    border-radius: 70px;
     width: 100px;
+    margin-top: 40px;
+
 }
 
     
