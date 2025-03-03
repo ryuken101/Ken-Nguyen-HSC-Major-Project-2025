@@ -455,6 +455,7 @@ input {
 .input-group {
     padding: 4% 0;
     position: relative;
+    color: white;
 }
 
 .input-group i {
@@ -746,18 +747,23 @@ input::placeholder {
     position: fixed;
     left: 0;
     top: 0;
+    flex-direction: column;
+    align-items: center; /* Center content */
+
+
 }
 
 .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .sidebar li {
     display: flex;
     align-items: center;
     height: 100px;
-    padding: 15px;
+    padding: 4px 0; /* Adjust to control spacing */
     font-size: 18px;
     font-weight: bold;
     color: white;
@@ -765,21 +771,43 @@ input::placeholder {
     margin-bottom: 40px; /* Increases vertical spacing */
     margin-left: 30px;
     margin-right: 40px;
+    flex-direction: column; /* Stack image and text */
+    justify-content: center;
+    gap: 8px;
+    line-height: 1; /* Prevents extra vertical space */
+    border: 1px solid red;
+    
 }
 
 .sidebar li img {
     width: 300px;
-    height: 300px;
+    height: auto;
     object-fit: contain;
     position: absolute;
     left: 20px;
+    display: block;
+}
+
+.sidebar li a {
+    display: flex; /* Shrinks the anchor to fit content only */
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    padding: 0px;
+    margin: 0;  /* Prevents unwanted outer space */
+    border: 1px solid blue;
 }
 
 .sidebar li span {
     text-align: left;
+    display: inline-block;
     position: relative;
     left: 100px;
     font-weight: bold;
+    margin-left: -70px;
+    padding: 0; /* Ensures no extra padding is clickable */
+    line-height: 1; /* Prevents unwanted vertical space */
  
 }
 

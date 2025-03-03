@@ -79,7 +79,7 @@ if (submit) {
                 const docRef = doc(db, "users", user.uid);
                 setDoc(docRef, userData)
                     .then(() => {
-                        window.location.href = 'userpage.html';
+                        window.location.href = 'dashboard.html';
                     })
                     .catch((error) => {
                         console.error("Error writing document", error);
@@ -118,7 +118,7 @@ if (loginSubmitBtn) {
             // Show success message and redirect
             showMessage('Login successful! Redirecting...', 'login_message');
             setTimeout(() => {
-                window.location.href = 'userpage.html';
+                window.location.href = 'dashboard.html';
             }, 2000); // Redirect after 2 seconds
         } catch (error) {
             console.error("Error during login:", error);
