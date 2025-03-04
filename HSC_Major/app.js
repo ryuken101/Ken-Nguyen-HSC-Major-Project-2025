@@ -134,3 +134,17 @@ if (loginSubmitBtn) {
         }
     });
 }
+
+
+const allSideMenu = document.querySelectorAll('#sidebar .side_menu.top li a');
+
+allSideMenu.forEach(item => {
+    const li = item.parentElement;
+
+    item.addEventListener('click', function () {
+        allSideMenu.forEach(i => {
+            i.parentElement.classList.remove('active'); // FIXED
+        });
+        li.classList.add('active'); // FIXED
+    });
+});
