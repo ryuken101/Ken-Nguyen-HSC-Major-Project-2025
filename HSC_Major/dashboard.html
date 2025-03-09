@@ -7,6 +7,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body class="user_body">
@@ -55,19 +56,64 @@
                 </a>
             </li>
             <li>
-            <a href="#">
+            <a href="#" class="logout">
                 <span class="material-symbols--logout-rounded"></span>
                 <span class="sidebar_text">Logout</span>
             </a>
             </li>
         </ul>
     </section>
+    <!-- Sidebar -->
+
+    <!-- User Content -->
+    <section id="content">
+        <!-- Navbar -->
+        <nav>
+            <span class="material-symbols--menu-rounded"></span>
+            <form action="#">
+                <div class="form_input">
+                    <input type="search" placeholder="Search...">
+                    <button type="submit" class="search_btn"><span class="material-symbols--search-rounded"></span></button>
+                </div>
+            </form>
+            <a href="#" class="account">
+                <span class="mdi--account"></span>
+            </a>
+            <button type="button" id="dropdown"><span class="material-symbols--arrow-drop-down-rounded"></span></button>
+        </nav>
+        
+
+        <!-- Main-->
+        <main>
+            <div class="head_title">
+                <div class="left">
+                    <h1>Dashboard</h1>
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="#">Dashboard</a>
+                        </li>
+                        <li><span class="mingcute--right-fill"></span></li>
+                        <li>
+                            <a href="#" class="active">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chart_container">
+                <h3>My Stats</h3>
+                <div>
+                    <canvas id="user_stats"></canvas>
+                </div>
+            </div>
+        </main>
+    </section>
+    <!--Main -->
 
 
 
 
-
-    <script type="module" defer src="app.js"></script>
+    <script type="module" defer src="userpage.js"></script>
+    <script type="module" src="user_stats.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

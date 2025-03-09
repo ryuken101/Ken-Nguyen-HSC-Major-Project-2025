@@ -42,3 +42,42 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = 'login.html';
   }
 });
+
+// Dashboard 
+const allSideMenu = document.querySelectorAll('#sidebar .side_menu.top li a');
+
+allSideMenu.forEach(item => {
+    const li = item.parentElement;
+
+    item.addEventListener('click', function () {
+        allSideMenu.forEach(i => {
+            i.parentElement.classList.remove('active'); 
+        });
+        li.classList.add('active'); 
+    });
+});
+
+// Toggle sidebar 
+
+const menubar = document.querySelector('#content nav .material-symbols--menu-rounded');
+const sidebar = document.getElementById('sidebar');
+
+menubar.addEventListener('click', function () {
+  sidebar.classList.toggle('hide');
+})
+
+if(window.innerWidth < 768) {
+  sidebar.classList.add('hide');
+
+}
+
+const search_btn = document.querySelector('#content nav form .form_input button');
+const search_form = document.querySelector('#content nav form');
+
+  search_btn.addEventListener('click', function (e) {
+    if(window.innerWidth < 576) {
+      e.preventDefault();
+      search_form.classList.toggle('show');
+    }
+  })
+
