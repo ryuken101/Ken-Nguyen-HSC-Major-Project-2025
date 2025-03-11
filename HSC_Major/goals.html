@@ -2,12 +2,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Goals</title>
     <link rel="stylesheet" href="styles.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
 <body class="user_body">
@@ -19,7 +20,7 @@
             <span class="text_d">Dashboard</span>
         </a>
         <ul class="side_menu top">
-            <li class="active">
+            <li>
                 <a href="dashboard.html">
                     <span class="ic--round-home"></span>
                     <span class="sidebar_text">Home</span>
@@ -37,7 +38,7 @@
                     <span class="sidebar_text">My Stats</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="goals.html">
                     <span class="mingcute--target-line"></span>
                     <span class="sidebar_text">Goals</span>
@@ -87,36 +88,79 @@
         <main>
             <div class="head_title">
                 <div class="left">
-                    <h1>Dashboard</h1>
+                    <h1>Goals</h1>
                     <ul class="breadcrumb">
                         <li>
-                            <a href="#">Dashboard</a>
+                            <a href="dashboard.html">Dashboard</a>
                         </li>
                         <li><span class="mingcute--right-fill"></span></li>
                         <li>
-                            <a href="#" class="active">Home</a>
+                            <a href="goals.html" class="active">Goals</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="mid_section">
-                <div class="chart_container">
-                    <h3>My Stats</h3>
-                    <div>
-                        <canvas id="user_stats"></canvas>
+            <div class="calendar_container">
+                <div class="left">
+                    <div class="calendar">
+                        <div class="month">
+                            <span class="mingcute--left-line"></span>
+                            <div class="date">March 2025</div>
+                            <span class="mingcute--right-line"></span>
+                        </div>
+                        <div class="weekdays">
+                            <div>sun</div>
+                            <div>mon</div>
+                            <div>tue</div>
+                            <div>wed</div>
+                            <div>thu</div>
+                            <div>fri</div>
+                            <div>sat</div>
+                        </div>
+                        <div class="days">
+                            <div class="day pre_date">30</div>
+                            <div class="day prev_date">31</div>
+                            <div class="day">1</div>
+                            <div class="day">2</div>
+                            <div class="day">3</div>
+                            <div class="day">4</div>
+                            <div class="day">5</div>
+                            <div class="day">6</div>
+                            <div class="day">7</div>
+                            <div class="day event">8</div>
+                            <div class="day">9</div>
+                            <div class="day">10</div>
+                            <div class="day">11</div>
+                            <div class="day">12</div>
+                            <div class="day">13</div>
+                            <div class="day event active">14</div>
+                            <div class="day today">15</div>
+                            <div class="day">16</div>
+                            <div class="day">17</div>
+                            <div class="day">18</div>
+                            <div class="day">19</div>
+                            <div class="day">20</div>
+                            <div class="day event">21</div>
+                            <div class="day">22</div>
+                            <div class="day">23</div>
+                            <div class="day">24</div>
+                            <div class="day">25</div>
+                            <div class="day">26</div>
+                            <div class="day">28</div>
+                            <div class="day">29</div>
+                            <div class="day">30</div>
+                            <div class="day next_date">1</div>
+                            <div class="day next_date">2</div>
+                            <div class="day next_date">3</div>
+                        </div>
                     </div>
                 </div>
-                <div class="task_container">
-                    <h3>Tasks</h3>
-                </div>
             </div>
+
             
         </main>
     </section>
     <!--Main -->
-
-
-
 
     <script type="module" defer src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>

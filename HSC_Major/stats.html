@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>My Stats</title>
     <link rel="stylesheet" href="styles.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
@@ -19,7 +19,7 @@
             <span class="text_d">Dashboard</span>
         </a>
         <ul class="side_menu top">
-            <li class="active">
+            <li>
                 <a href="dashboard.html">
                     <span class="ic--round-home"></span>
                     <span class="sidebar_text">Home</span>
@@ -31,7 +31,7 @@
                     <span class="sidebar_text">Tasks</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="stats.html">
                     <span class="icon-park-outline--radar-chart"></span>
                     <span class="sidebar_text">My Stats</span>
@@ -87,36 +87,24 @@
         <main>
             <div class="head_title">
                 <div class="left">
-                    <h1>Dashboard</h1>
+                    <h1>My Stats</h1>
                     <ul class="breadcrumb">
                         <li>
-                            <a href="#">Dashboard</a>
+                            <a href="dashboard.html">Dashboard</a>
                         </li>
                         <li><span class="mingcute--right-fill"></span></li>
                         <li>
-                            <a href="#" class="active">Home</a>
+                            <a href="stats.html" class="active">My Stats</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="mid_section">
-                <div class="chart_container">
-                    <h3>My Stats</h3>
-                    <div>
-                        <canvas id="user_stats"></canvas>
-                    </div>
-                </div>
-                <div class="task_container">
-                    <h3>Tasks</h3>
-                </div>
-            </div>
+
+
             
         </main>
     </section>
     <!--Main -->
-
-
-
 
     <script type="module" defer src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>

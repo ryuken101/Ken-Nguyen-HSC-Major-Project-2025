@@ -235,6 +235,9 @@
     width: 100%;
     max-width: 1300px;
     padding: 0 50px;
+    animation: appear linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
 }
 
 .main_content h1 {
@@ -376,6 +379,9 @@
     margin-right: 40px;
     margin-left: 40px;
     margin-bottom: 30px;
+    animation: appear linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
     
 }
 
@@ -409,7 +415,9 @@
     border-radius: 25px; 
     margin-right: 30px;
     margin-left: 30px;
-    
+    animation: appear linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
 }
 
 .services2 h1 {
@@ -427,6 +435,9 @@
     border-radius: 25px; 
     margin-right: 30px;
     margin-left: 30px;
+    animation: appear linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
     
 }
 
@@ -600,6 +611,33 @@ input::placeholder {
     text-decoration: underline;
 }
 
+.messageDiv {
+    background-color: white;
+    height: 40px;
+    border-radius: 10px;
+    color: var(--blue);
+}
+
+#login_message {
+    text-align: center;
+}
+
+#signup_message {
+    text-align: center;
+    font-size: 17px;
+
+}
+
+@keyframes appear {
+    from{
+        opacity: 0;
+        scale: 0.5;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
+}
 
 /* About Page */
 
@@ -1091,6 +1129,22 @@ li {
     cursor: pointer;
 }
 
+#content nav .account {
+    color: var(--dark);
+}
+
+#content nav .account:hover {
+    color: var(--blue);
+}
+
+#content nav button #dropdown {
+    color: var(--dark);
+}
+
+#content nav button #dropdown:hover {
+    color: var(--blue);
+}
+
 /* Main */
 #content main {
     width: 100%;
@@ -1179,17 +1233,21 @@ li {
     
   }
 
+.mid_section {
+    display: flex;
+}
 
-.chart_container{ 
+
+.mid_section .chart_container { 
     width: 400px;
-    height: 400px;
+    height: 500px;
     position: relative;
     border-radius: 20px;
     background: var(--light);
     margin-top: 70px;
 }
 
-.chart_container h3 {
+.mid_section .chart_container h3 {
     font-size: 26px;
     font-weight: 600;
     color: var(--dark);
@@ -1203,3 +1261,221 @@ li {
     width: auto;
     margin-top: 20px;
 }
+
+.task_container {
+    width: 400px;
+    height: 200px;
+    background-color: var(--light);
+    border-radius: 20px;
+    display: inline;
+    margin-top: 200px;
+    margin-left: 100px;
+    position: relative;
+
+}
+
+.task_container h3 {
+    margin-left: 150px;
+    margin-top: 20px;
+
+}
+
+/* Calendar */
+.calendar_container {
+    position: relative;
+    width: 1200px;
+    min-height: 850px;
+    margin: 50px auto;
+    padding: 5px;
+    color: var(--light);
+    display: flex;
+    border-radius: 10px;
+    background-color: #7ec4cf;
+}
+
+.mingcute--right-line {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z'/%3E%3Cpath fill='%23000' d='M15.707 11.293a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 1 1-1.414-1.414l4.95-4.95l-4.95-4.95a1 1 0 0 1 1.414-1.414z'/%3E%3C/g%3E%3C/svg%3E");
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+
+  .mingcute--left-line {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cpath d='M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z'/%3E%3Cpath fill='%23000' d='M8.293 12.707a1 1 0 0 1 0-1.414l5.657-5.657a1 1 0 1 1 1.414 1.414L10.414 12l4.95 4.95a1 1 0 0 1-1.414 1.414z'/%3E%3C/g%3E%3C/svg%3E");
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }  
+
+.left {
+    width: 60%;
+    padding: 20px;
+  }
+
+.calendar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    color: #878895;
+    border-radius: 5px;
+    background-color: var(--light);
+}
+
+.calendar::before, 
+.calendar::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 12px;
+    height: 97%;
+    border-radius: 0 5px 5px 0;
+    background-color: #d3d5d6f0;
+    transform: translateY(-50%);
+}
+
+.calendar::before{
+    height: 94%;
+    left: calc(100% + 12px);
+    background-color: rgb(193, 193, 193);
+}
+
+.calendar .month {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.calendar .month .mingcute--left-line,
+.calendar .month .mingcute--right-line {
+    cursor: pointer;
+}
+
+.calendar .month .mingcute--left-line:hover,
+.calendar .month .mingcute--right-line:hover {
+    color: var(--blue);
+}
+
+.calendar .weekdays {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.calendar .weekdays div {
+    width: 14.28%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar .days {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.calendar .days .day {
+    width: 14.28%;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--blue);
+    border: 1px solid var(--grey);
+}
+
+.calendar .day:not(.prev_date, .next_date):hover {
+    color: var(--light);
+    background-color: var(--blue);
+}
+
+.calendar .days .prev_date,
+.calendar .days .next_date {
+    color: var(--blue);
+}
+
+.calendar .days .active {
+    position: relative;
+    font-size: 2rem;
+    color: var(--light);
+    background-color: var(--blue);
+}
+
+.calendar .days .active:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 10px 2px var(--blue);
+}
+
+.calendar .days .today {
+    font-size: 2rem;
+
+}
+
+.calendar .days .event {
+    position: relative;
+}
+
+.calendar .days .event::after {
+    content: "";
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    width: 75%;
+    height: 6px;
+    border-radius: 30px;
+    transform: translateX(-50%);
+    background-color: var(--blue);
+}
+
+.calendar .event:hover::after {
+    background-color: var(--light);
+}
+
+.calendar .active.event::after {
+    background-color: var(--light);
+    bottom: 20%;
+}
+/* Calendar */
+
