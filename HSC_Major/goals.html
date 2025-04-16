@@ -100,70 +100,459 @@
                     </ul>
                 </div>
             </div>
-            <div class="calendar_container">
-                <div class="left">
-                    <div class="calendar">
-                        <div class="month">
-                            <span class="mingcute--left-line"></span>
-                            <div class="date">March 2025</div>
-                            <span class="mingcute--right-line"></span>
+            
+        <!-- Calendar -->      
+        <section class="calendar_container">
+            <div class="left">
+                <div class="calendar">
+                    <div class="month">
+                        <button class="mingcute--left-line" id="prev-month"></button>
+                        <div id="current-month-year">Month and Year</div>
+                        <button class="mingcute--right-line" id="next-month"></button>
+                    </div>
+                    <div class="weekdays">
+                        <div>Sun</div>
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                    </div>
+                    <div class="days" id="calendar-days">
+
+                    </div>
+                    <div class="goto-today">
+                        <div class="goto">
+                            <input type="text" placeholder="mm/yyyy" class="date-input" id="month-year-input">
+                            <button class="goto-btn" id="go-to-date">Go</button>
                         </div>
-                        <div class="weekdays">
-                            <div>sun</div>
-                            <div>mon</div>
-                            <div>tue</div>
-                            <div>wed</div>
-                            <div>thu</div>
-                            <div>fri</div>
-                            <div>sat</div>
-                        </div>
-                        <div class="days">
-                            <div class="day pre_date">30</div>
-                            <div class="day prev_date">31</div>
-                            <div class="day">1</div>
-                            <div class="day">2</div>
-                            <div class="day">3</div>
-                            <div class="day">4</div>
-                            <div class="day">5</div>
-                            <div class="day">6</div>
-                            <div class="day">7</div>
-                            <div class="day event">8</div>
-                            <div class="day">9</div>
-                            <div class="day">10</div>
-                            <div class="day">11</div>
-                            <div class="day">12</div>
-                            <div class="day">13</div>
-                            <div class="day event active">14</div>
-                            <div class="day today">15</div>
-                            <div class="day">16</div>
-                            <div class="day">17</div>
-                            <div class="day">18</div>
-                            <div class="day">19</div>
-                            <div class="day">20</div>
-                            <div class="day event">21</div>
-                            <div class="day">22</div>
-                            <div class="day">23</div>
-                            <div class="day">24</div>
-                            <div class="day">25</div>
-                            <div class="day">26</div>
-                            <div class="day">28</div>
-                            <div class="day">29</div>
-                            <div class="day">30</div>
-                            <div class="day next_date">1</div>
-                            <div class="day next_date">2</div>
-                            <div class="day next_date">3</div>
-                        </div>
+                        <button class="today-btn" id="go-to-today">Today</button>
                     </div>
                 </div>
             </div>
 
+        <!-- Event Creation Panel -->
+        <div class="event-panel">
+            <button id="add-event-btn" class="gg--add"></button>
             
+            <div id="event-form" class="event-form" style="display: none;">
+                <h3>Create New Event</h3>
+                <div class="form-group">
+                    <label for="event-title">Title:</label>
+                    <input type="text" id="event-title" placeholder="Enter event title">
+                </div>
+                <div class="form-group">
+                    <label for="event-description">Description:</label>
+                    <textarea id="event-description" placeholder="Enter event description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="event-type">Event Type:</label>
+                    <select id="event-type">
+                        <option value="study">Study</option>
+                        <option value="leisure">Leisure</option>
+                        <option value="physical">Physical Health</option>
+                        <option value="mental">Mental Health</option>
+                        <option value="sleep">Sleep</option>
+                    </select>
+                </div>
+                <button id="save-event-btn" class="save-btn">Save Event</button>
+            </div>
+            
+            <div id="events-list" class="events-list">
+                <h3>Your Events</h3>
+                <div id="draggable-events"></div>
+            </div>
+        </div>
+
+        <!-- Notification Popup -->
+        <div id="notification" class="notification" style="display: none;">
+            <div class="notification-content">
+                <span id="notification-message"></span>
+                <button id="close-notification">OK</button>
+            </div>
+        </div>
+
+        <!-- Event Details Modal -->
+        <div id="event-details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="modal-date-title">Event Details</h2>
+                <div id="event-details-content"></div>
+            </div>
+        </div>
+        </section>
         </main>
     </section>
     <!--Main -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Calendar elements
+        const currentMonthYear = document.getElementById('current-month-year');
+        const calendarDays = document.getElementById('calendar-days');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const monthYearInput = document.getElementById('month-year-input');
+        const goToDateBtn = document.getElementById('go-to-date');
+        const goToTodayBtn = document.getElementById('go-to-today');
 
-    <script type="module" defer src="userpage.js"></script>
+        // Event elements
+        const addEventBtn = document.getElementById('add-event-btn');
+        const eventForm = document.getElementById('event-form');
+        const saveEventBtn = document.getElementById('save-event-btn');
+        const draggableEvents = document.getElementById('draggable-events');
+        const notification = document.getElementById('notification');
+        const notificationMessage = document.getElementById('notification-message');
+        const closeNotification = document.getElementById('close-notification');
+
+        // Current date
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+        let activeEvent = null;
+
+        // Months array
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Initialize calendar
+        function renderCalendar() {
+            calendarDays.innerHTML = '';
+            currentMonthYear.textContent = `${months[currentMonth]} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+            // Previous month days
+            for (let i = firstDay; i > 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day prev-date';
+                dayElement.textContent = daysInPrevMonth - i + 1;
+                calendarDays.appendChild(dayElement);
+            }
+
+            // Current month days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                dayElement.textContent = i;
+                dayElement.dataset.date = `${currentYear}-${currentMonth+1}-${i}`;
+
+                // Highlight today
+                if (i === currentDate.getDate() && 
+                    currentMonth === currentDate.getMonth() && 
+                    currentYear === currentDate.getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+
+                // Add existing events
+                const dateStr = `${currentYear}-${currentMonth+1}-${i}`;
+                const dayEvents = events.filter(e => e.date === dateStr);
+                
+                if (dayEvents.length > 0) {
+                    const eventIndicator = document.createElement('div');
+                    eventIndicator.className = 'event-indicator';
+                    dayElement.appendChild(eventIndicator);
+                    dayElement.classList.add('has-event');
+                }
+
+                // Click handler for date selection
+                dayElement.addEventListener('click', function() {
+                    // Remove active class from all days
+                    document.querySelectorAll('.day').forEach(d => {
+                        d.classList.remove('active');
+                        d.style.fontSize = ''; // Reset font size
+                    });
+                    
+                    // Add active class to clicked day
+                    this.classList.add('active');
+                    this.style.fontSize = '2rem'; // Make number bigger
+                    
+                    // Show events for this date
+                    if (this.dataset.date) {
+                        showEventDetails(this.dataset.date);
+                    }
+                });
+
+                // Drag-and-drop handlers
+                dayElement.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dayElement.classList.add('drag-over');
+                });
+
+                dayElement.addEventListener('dragleave', () => {
+                    dayElement.classList.remove('drag-over');
+                });
+
+                dayElement.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dayElement.classList.remove('drag-over');
+                    
+                    if (activeEvent) {
+                        const eventId = activeEvent.dataset.eventId;
+                        const event = events.find(e => e.id == eventId);
+                        
+                        if (event) {
+                            event.date = dayElement.dataset.date;
+                            saveEvents();
+                            checkEventNotifications();
+                            renderCalendar();
+                            renderDraggableEvents();
+                            
+                            // Auto-select the date after dropping
+                            dayElement.click();
+                        }
+                    }
+                });
+
+                calendarDays.appendChild(dayElement);
+            }
+
+            // Next month days
+            const totalDays = firstDay + daysInMonth;
+            const daysFromNextMonth = totalDays <= 35 ? 35 - totalDays : 42 - totalDays;
+
+            for (let i = 1; i <= daysFromNextMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day next-date';
+                dayElement.textContent = i;
+                calendarDays.appendChild(dayElement);
+            }
+        }
+
+        // Show event details modal
+        function showEventDetails(dateStr) {
+            const modal = document.getElementById('event-details-modal');
+            const modalContent = document.getElementById('event-details-content');
+            const modalTitle = document.getElementById('modal-date-title');
+            
+            // Format date for display
+            const [year, month, day] = dateStr.split('-');
+            const dateObj = new Date(year, month - 1, day);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            
+            modalTitle.textContent = `Events for ${formattedDate}`;
+            
+            const dayEvents = events.filter(e => e.date === dateStr);
+            
+            if (dayEvents.length === 0) {
+                modalContent.innerHTML = '<p>No events scheduled for this date</p>';
+            } else {
+                modalContent.innerHTML = dayEvents.map(event => {
+                    return `
+                    <div class="event-detail ${event.type}">
+                        <h3>${event.title}</h3>
+                        <p>${event.description || 'No description'}</p>
+                        <div class="event-meta">
+                            <span class="event-type-tag">${event.type}</span>
+                            <span>Created: ${new Date(event.createdAt).toLocaleString()}</span>
+                        </div>
+                        <button class="delete-event" data-id="${event.id}">Delete</button>
+                    </div>
+                    `;
+                }).join('');
+                
+                // Add delete event handlers
+                document.querySelectorAll('.delete-event').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const eventId = parseInt(this.dataset.id);
+                        events = events.filter(e => e.id !== eventId);
+                        saveEvents();
+                        renderCalendar();
+                        showEventDetails(dateStr); // Refresh modal
+                        renderDraggableEvents(); // Update the draggable events list
+                    });
+                });
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // Event form toggle
+        addEventBtn.addEventListener('click', () => {
+            eventForm.style.display = eventForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Save new event
+        saveEventBtn.addEventListener('click', () => {
+            const title = document.getElementById('event-title').value;
+            const description = document.getElementById('event-description').value;
+            const type = document.getElementById('event-type').value;
+
+            if (!title) {
+                alert('Please enter a title for your event');
+                return;
+            }
+
+            const newEvent = {
+                id: Date.now(),
+                title,
+                description,
+                type,
+                date: null, // Will be set when dragged to calendar
+                createdAt: new Date().toISOString()
+            };
+
+            events.push(newEvent);
+            saveEvents();
+            renderDraggableEvents();
+            
+            // Reset form
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-description').value = '';
+            document.getElementById('event-type').value = 'study';
+            eventForm.style.display = 'none';
+        });
+
+        // Render draggable events
+        function renderDraggableEvents() {
+            draggableEvents.innerHTML = '';
+            
+            const unscheduledEvents = events.filter(e => !e.date);
+            
+            if (unscheduledEvents.length === 0) {
+                draggableEvents.innerHTML = '<p style="color: var(--blue)">No events to schedule. Add one!</p>';
+                return;
+            }
+
+            unscheduledEvents.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.className = `draggable-event ${event.type}`;
+                eventElement.dataset.eventId = event.id;
+                eventElement.draggable = true;
+                
+                eventElement.innerHTML = `
+                    <div class="event-header">
+                        <span class="event-type-tag">${event.type}</span>
+                        <button class="delete-event" data-id="${event.id}">
+                            <span class="material-symbols--delete-rounded"></span>
+                        </button>
+                    </div>
+                    <strong>${event.title}</strong>
+                    <p>${event.description || 'No description'}</p>
+                `;
+
+                // Add delete handler for unscheduled events
+                eventElement.querySelector('.delete-event').addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent drag start
+                    const eventId = parseInt(this.dataset.id);
+                    events = events.filter(e => e.id !== eventId);
+                    saveEvents();
+                    renderDraggableEvents();
+                });
+
+                eventElement.addEventListener('dragstart', () => {
+                    activeEvent = eventElement;
+                    eventElement.classList.add('dragging');
+                });
+
+                eventElement.addEventListener('dragend', () => {
+                    eventElement.classList.remove('dragging');
+                    activeEvent = null;
+                });
+
+                draggableEvents.appendChild(eventElement);
+            });
+        }
+
+        // Save events to localStorage
+        function saveEvents() {
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+        }
+
+        // Check for event notifications
+        function checkEventNotifications() {
+            const todayStr = `${currentDate.getFullYear()}-${currentDate.getMonth()+1}-${currentDate.getDate()}`;
+            const todaysEvents = events.filter(e => e.date === todayStr);
+            
+            if (todaysEvents.length > 0) {
+                showNotification(`You have ${todaysEvents.length} event(s) scheduled for today!`);
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notificationMessage.textContent = message;
+            notification.style.display = 'flex';
+        }
+
+        // Close notification
+        closeNotification.addEventListener('click', () => {
+            notification.style.display = 'none';
+        });
+
+        // Navigation event listeners
+        prevMonthBtn.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        });
+
+        goToDateBtn.addEventListener('click', () => {
+            const input = monthYearInput.value.split('/');
+            if (input.length === 2) {
+                const month = parseInt(input[0]) - 1;
+                const year = parseInt(input[1]);
+                if (month >= 0 && month <= 11 && !isNaN(year)) {
+                    currentMonth = month;
+                    currentYear = year;
+                    renderCalendar();
+                    return;
+                }
+            }
+            alert('Please enter a valid date in MM/YYYY format');
+        });
+
+        goToTodayBtn.addEventListener('click', () => {
+            currentDate = new Date();
+            currentMonth = currentDate.getMonth();
+            currentYear = currentDate.getFullYear();
+            renderCalendar();
+        });
+
+        // Modal close button
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('event-details-modal').style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('event-details-modal')) {
+                document.getElementById('event-details-modal').style.display = 'none';
+            }
+        });
+
+        // Initial render
+        renderCalendar();
+        renderDraggableEvents();
+        checkEventNotifications();
+    });
+    </script>
+
+    <script type="module" src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>
+    <script type="module" src="app.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

@@ -135,3 +135,16 @@ if (loginSubmitBtn) {
     });
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+// Calendar Functionality 
