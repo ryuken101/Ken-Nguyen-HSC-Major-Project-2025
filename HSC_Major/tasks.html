@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="firebase.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
@@ -32,7 +33,7 @@
                     <span class="sidebar_text">My Stats</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="tasks.html">
                     <span class="clarity--tasks-solid"></span>
                     <span class="sidebar_text">Tasks</span>
@@ -51,7 +52,7 @@
                 </a>
             </li>
             <li>
-            <a href="#" class="logout">
+            <a class="logout">
                 <span class="material-symbols--logout-rounded"></span>
                 <span class="sidebar_text">Logout</span>
             </a>
@@ -71,10 +72,6 @@
                     <button type="submit" class="search_btn"><span class="material-symbols--search-rounded"></span></button>
                 </div>
             </form>
-            <a href="account_page.html" class="account">
-                <span class="mdi--account"></span>
-            </a>
-            <button type="button" id="dropdown"><span class="material-symbols--arrow-drop-down-rounded"></span></button>
         </nav>
         
 
@@ -179,9 +176,36 @@
         </main>
     </section>
     <!--Main -->
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+        // Your Firebase config (same as in your login page)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAUU2wXBEWT8c-6pOS2iyEjvgQlGzmolRo",
+            authDomain: "purrsue-login.firebaseapp.com",
+            projectId: "purrsue-login",
+            storageBucket: "purrsue-login.appspot.com",
+            messagingSenderId: "329901830629",
+            appId: "1:329901830629:web:ba907e54131d88ea21bf0c"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        window.firebaseAuth = auth;
+        window.firebaseDb = db;
+        window.firebaseFunctions = {
+            collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, onAuthStateChanged
+        };
+      
+        
         document.addEventListener('DOMContentLoaded', function() {
-    // Calendar elements
+        // Calendar elements
         const currentMonthYear = document.getElementById('current-month-year');
         const calendarDays = document.getElementById('calendar-days');
         const prevMonthBtn = document.getElementById('prev-month');
@@ -203,14 +227,94 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-        let events = JSON.parse(localStorage.getItem('calendarEvents')) || [];
+        let events = [];
         let activeEvent = null;
+        let currentUserId = null;
+
+        // Firebase setup
+        const auth = window.firebaseAuth;
+        const db = window.firebaseDb;
+        const { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, onAuthStateChanged } = window.firebaseFunctions;
 
         // Months array
         const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                loadUserEvents();
+                setupRealTimeUpdates();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Load events from Firebase
+        async function loadUserEvents() {
+            if (!currentUserId) return;
+            
+            const userEventsRef = doc(db, "users", currentUserId, "data", "events");
+            
+            try {
+                const docSnap = await getDoc(userEventsRef);
+                if (docSnap.exists()) {
+                    events = docSnap.data().events || [];
+                    renderCalendar();
+                    renderDraggableEvents();
+                    checkEventNotifications();
+                } else {
+                    await setDoc(userEventsRef, { events: [] });
+                    events = [];
+                    renderCalendar();
+                    renderDraggableEvents();
+                }
+            } catch (error) {
+                console.error("Error loading events:", error);
+                showNotification("Error loading your events. Please try again.");
+            }
+        }
+
+        // Set up real-time updates
+        function setupRealTimeUpdates() {
+            if (!currentUserId) return;
+            
+            const userEventsRef = doc(db, "users", currentUserId, "data", "events");
+            
+            onSnapshot(userEventsRef, (doc) => {
+                if (doc.exists()) {
+                    events = doc.data().events || [];
+                    renderCalendar();
+                    renderDraggableEvents();
+                    
+                    // Refresh modal if open
+                    const modal = document.getElementById('event-details-modal');
+                    if (modal.style.display === 'flex') {
+                        const activeDate = document.querySelector('.day.active')?.dataset.date;
+                        if (activeDate) showEventDetails(activeDate);
+                    }
+                }
+            });
+        }
+
+        // Save events to Firebase
+        async function saveEvents() {
+            if (!currentUserId) return;
+            
+            const userEventsRef = doc(db, "users", currentUserId, "data", "events");
+            
+            try {
+                await setDoc(userEventsRef, { events }, { merge: true });
+            } catch (error) {
+                console.error("Error saving events:", error);
+                showNotification("Error saving your events. Please try again.");
+                // Revert changes if save fails
+                await loadUserEvents();
+            }
+        }
 
         // Initialize calendar
         function renderCalendar() {
@@ -249,22 +353,15 @@
                 
                 if (dayEvents.length > 0) {
                     dayElement.classList.add('has-event');
-                    
-                    // Add number of events as tooltip
                     dayElement.title = `${dayEvents.length} event(s) scheduled`;
                 }
 
                 // Click handler for date selection
                 dayElement.addEventListener('click', function() {
-                    // Remove active class from all days
                     document.querySelectorAll('.day').forEach(d => {
                         d.classList.remove('active');
                     });
-                    
-                    // Add active class to clicked day
                     this.classList.add('active');
-                    
-                    // Show events for this date
                     if (this.dataset.date) {
                         showEventDetails(this.dataset.date);
                     }
@@ -280,44 +377,33 @@
                     dayElement.classList.remove('drag-over');
                 });
 
-                dayElement.addEventListener('drop', (e) => {
+                dayElement.addEventListener('drop', async (e) => {
                     e.preventDefault();
                     dayElement.classList.remove('drag-over');
                     
                     if (activeEvent) {
                         const eventId = activeEvent.dataset.eventId;
-                        const event = events.find(e => e.id == eventId);
+                        const eventIndex = events.findIndex(e => e.id == eventId);
                         
-                        if (event) {
-                            event.date = dayElement.dataset.date;
-                            saveEvents();
-                            checkEventNotifications();
-                            renderCalendar();
-                            renderDraggableEvents();
-                            
-                            // Auto-select the date after dropping
-                            dayElement.click();
-                            
-                            // Show success notification
-                            showNotification(`Event added to ${formatDateForDisplay(dayElement.dataset.date)}`);
+                        if (eventIndex !== -1) {
+                            events[eventIndex].date = dayElement.dataset.date;
+                            try {
+                                await saveEvents();
+                                checkEventNotifications();
+                                renderCalendar();
+                                renderDraggableEvents();
+                                dayElement.click();
+                                showNotification(`Event added to ${formatDateForDisplay(dayElement.dataset.date)}`);
+                            } catch (error) {
+                                console.error("Error updating event:", error);
+                                showNotification("Error updating event. Please try again.");
+                            }
                         }
                     }
                 });
 
                 calendarDays.appendChild(dayElement);
             }
-
-            // Helper function to format dates for display
-            function formatDateForDisplay(dateStr) {
-                const [year, month, day] = dateStr.split('-');
-                const date = new Date(year, month - 1, day);
-                return date.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    month: 'short', 
-                    day: 'numeric' 
-                });
-            }
-
 
             // Next month days
             const totalDays = firstDay + daysInMonth;
@@ -331,13 +417,23 @@
             }
         }
 
+        // Helper function to format dates for display
+        function formatDateForDisplay(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            const date = new Date(year, month - 1, day);
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
         // Show event details modal
         function showEventDetails(dateStr) {
             const modal = document.getElementById('event-details-modal');
             const modalContent = document.getElementById('event-details-content');
             const modalTitle = document.getElementById('modal-date-title');
             
-            // Format date for display
             const [year, month, day] = dateStr.split('-');
             const dateObj = new Date(year, month - 1, day);
             const formattedDate = dateObj.toLocaleDateString('en-US', { 
@@ -368,15 +464,19 @@
                     `;
                 }).join('');
                 
-                // Add delete event handlers
                 document.querySelectorAll('.delete-event').forEach(btn => {
-                    btn.addEventListener('click', function() {
+                    btn.addEventListener('click', async function() {
                         const eventId = parseInt(this.dataset.id);
                         events = events.filter(e => e.id !== eventId);
-                        saveEvents();
-                        renderCalendar();
-                        showEventDetails(dateStr); // Refresh modal
-                        renderDraggableEvents(); // Update the draggable events list
+                        try {
+                            await saveEvents();
+                            renderCalendar();
+                            showEventDetails(dateStr);
+                            renderDraggableEvents();
+                        } catch (error) {
+                            console.error("Error deleting event:", error);
+                            showNotification("Error deleting event. Please try again.");
+                        }
                     });
                 });
             }
@@ -390,7 +490,7 @@
         });
 
         // Save new event
-        saveEventBtn.addEventListener('click', () => {
+        saveEventBtn.addEventListener('click', async () => {
             const title = document.getElementById('event-title').value;
             const description = document.getElementById('event-description').value;
             const type = document.getElementById('event-type').value;
@@ -405,19 +505,23 @@
                 title,
                 description,
                 type,
-                date: null, // Will be set when dragged to calendar
+                date: null,
                 createdAt: new Date().toISOString()
             };
 
             events.push(newEvent);
-            saveEvents();
-            renderDraggableEvents();
             
-            // Reset form
-            document.getElementById('event-title').value = '';
-            document.getElementById('event-description').value = '';
-            document.getElementById('event-type').value = 'study';
-            eventForm.style.display = 'none';
+            try {
+                await saveEvents();
+                renderDraggableEvents();
+                document.getElementById('event-title').value = '';
+                document.getElementById('event-description').value = '';
+                document.getElementById('event-type').value = 'study';
+                eventForm.style.display = 'none';
+            } catch (error) {
+                console.error("Error creating event:", error);
+                showNotification("Error creating event. Please try again.");
+            }
         });
 
         // Render draggable events
@@ -437,17 +541,6 @@
                 eventElement.dataset.eventId = event.id;
                 eventElement.draggable = true;
                 
-                // Different colors based on event type
-                const typeColors = {
-                    study: '#AAB9DF',
-                    leisure: '#FFEDB0',
-                    physical: '#BCE69C',
-                    mental: '#91D6D5',
-                    sleep: '#D3ABD7'
-                };
-                
-                
-                
                 eventElement.innerHTML = `
                     <div class="event-header">
                         <span class="event-type-tag">${event.type}</span>
@@ -459,13 +552,17 @@
                     <p>${event.description || 'No description'}</p>
                 `;
 
-                // Add delete handler for unscheduled events
-                eventElement.querySelector('.delete-event').addEventListener('click', function(e) {
+                eventElement.querySelector('.delete-event').addEventListener('click', async function(e) {
                     e.stopPropagation();
                     const eventId = parseInt(this.dataset.id);
                     events = events.filter(e => e.id !== eventId);
-                    saveEvents();
-                    renderDraggableEvents();
+                    try {
+                        await saveEvents();
+                        renderDraggableEvents();
+                    } catch (error) {
+                        console.error("Error deleting event:", error);
+                        showNotification("Error deleting event. Please try again.");
+                    }
                 });
 
                 eventElement.addEventListener('dragstart', () => {
@@ -482,11 +579,6 @@
 
                 draggableEvents.appendChild(eventElement);
             });
-        }
-
-        // Save events to localStorage
-        function saveEvents() {
-            localStorage.setItem('calendarEvents', JSON.stringify(events));
         }
 
         // Check for event notifications
@@ -562,11 +654,6 @@
                 document.getElementById('event-details-modal').style.display = 'none';
             }
         });
-
-        // Initial render
-        renderCalendar();
-        renderDraggableEvents();
-        checkEventNotifications();
     });
     </script>
 

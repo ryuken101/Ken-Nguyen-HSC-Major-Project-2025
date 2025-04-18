@@ -1865,7 +1865,7 @@ li {
     height: 7px;
     border-radius: 10px;
     background-color: var(--blue);
-    margin-bottom: 7px;
+    margin-bottom: 17px;
 }
 
 .day.has-event:hover::after {

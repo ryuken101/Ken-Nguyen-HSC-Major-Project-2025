@@ -1,4 +1,4 @@
-// Import the functions you need from the SDKs you need
+// Import the functions from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
@@ -22,10 +22,14 @@ const db = getFirestore(app);
 const menu = document.querySelector('#mobile-menu');
 const menuLink = document.querySelector('.navbar_menu');
 
+
+
 menu.addEventListener('click', function() {
     menu.classList.toggle('is-active');
     menuLink.classList.toggle('active');
 });
+
+
 
 // Login/Signup
 const signUpButton = document.getElementById('signup_button');
@@ -97,6 +101,8 @@ if (submit) {
     });
 }
 
+        
+
 // Login Functionality
 const loginSubmitBtn = document.getElementById('login_submit_btn');
 if (loginSubmitBtn) {
@@ -144,7 +150,3 @@ if (loginSubmitBtn) {
 
 
 
-
-
-
-// Calendar Functionality 
