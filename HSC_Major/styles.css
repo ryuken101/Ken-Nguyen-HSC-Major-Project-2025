@@ -1577,6 +1577,7 @@ li {
 
 .event-form {
     margin-bottom: 20px;
+
 }
 
 .form-group {
@@ -1873,13 +1874,118 @@ li {
     transition: 0.3s ease;
 }
 
-/* Make the active date number bigger */
+
 .day.active {
     font-size: 1.5rem;
 }
 
+/* Settings */
 
 
+
+
+.settings-container {
+    height: 600px;
+    width: 800px;
+    background-color: white;
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    margin-left: 100px;
+    animation: bounce 6s infinite;
+
+}
+
+.settings h2 {
+    margin-left: 40px;
+    margin-top: 40px;
+}
+
+.settings p {
+    margin-left: 40px;
+    margin-top: 20px;
+    
+}
+
+.settings button {
+    position: relative;
+    left: 300px;
+    margin-top: -22px; 
+    background: transparent;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    color: var(--blue);
+    width: 60px;
+    transition: 0.5s ease-out;
+    box-shadow: inset 0 0 0 0 var(--blue);
+    outline: 3px solid var(--blue);
+}
+
+.settings button:hover {
+    background-color: white;
+    color: var(--light);
+    box-shadow: inset 0 100px 0 0 var(--blue);
+}
+
+@keyframes bounce {
+    0%   {margin-top: 10px;}
+    50%  {margin-top: 0px}
+    100% {margin-top: 10px;}
+  }
+
+  .field-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: transparent;
+    border-radius: 8px;
+    position: relative;
+    margin-left: 20px;
+    border: 3px solid var(--blue);
+    transition: 0.3s ease;
+
+  }
+
+  .edit-input {
+    padding: 8px;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: none;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+
+  .cancel-btn {
+    position: relative;
+    left: 300px;
+    margin-top: -22px; 
+    background: transparent;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    color: var(--red);
+    width: 60px;
+    transition: 0.5s ease-out;
+    box-shadow: inset 0 0 0 0 var(--red);
+    outline: 3px solid var(--red);
+  }
+
+  .cancel-btn:hover {
+    background-color: white;
+    color: var(--light);
+    box-shadow: inset 0 100px 0 0 var(--red);
+  }
+  
+  #password-display {
+    font-family: monospace;
+    letter-spacing: 2px;
+  }
 /* Task Panel */
 
 

@@ -77,13 +77,14 @@ if (submit) {
                     email: email,
                     fName: fName,
                     lName: lName,
+                    password: password,
                     createdAt: new Date()
                 };
                 showMessage('Account Created Successfully', 'signup_message');
                 const docRef = doc(db, "users", user.uid);
                 setDoc(docRef, userData)
                     .then(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = 'login.html';
                     })
                     .catch((error) => {
                         console.error("Error writing document", error);
