@@ -1,6 +1,6 @@
 // Import the functions from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 // Your web app's Firebase configuration
@@ -142,7 +142,24 @@ if (loginSubmitBtn) {
     });
 }
 
+// Logout functionality
+const logoutBtn = document.querySelector('#logout');
 
+if(logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) =>{
+        e.preventDefault();
+        
+        signOut(auth).then(() => {
+            alert('See you soon!')
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000); // Redirect after 2 seconds
+
+        }).catch((error) => {
+            alert('An error occurred when logging out')
+        })
+    })
+}
 
 
 
