@@ -917,14 +917,15 @@ li {
     white-space: nowrap;
 }
 
-#sidebar .side_menu li a .logout-link {
+#sidebar .side_menu li a .logout-text {
     color: var(--red);
     cursor: pointer;
 }
 
-#sidebar .side_menu li a .logout-link:hover {
+#sidebar .side_menu li a .logout-text:hover {
     color: var(--blue);
-} 
+}
+
 
 
 
@@ -980,6 +981,11 @@ li {
     min-width: calc(60px - ((4px + 6px) * 2));
     display: flex;
     justify-content: center;
+    color: var(--red);
+}
+
+#sidebar .side_menu li a .material-symbols--logout-rounded:hover {
+    color: var(--blue);
 }
 
 /* Sidebar */ 
@@ -2001,17 +2007,18 @@ li {
 /* Stats Page */
 
 .stats-container {
-    width: 100%;
-    height: 70vh;
+    width: 400px;
+    height: 500px;
     position: relative;
     border-radius: 20px;
     background: var(--light);
     margin-top: 70px;
+    margin-left: 100px;
 }
 
 #user_stats {
-    width: 100%;
-    height: 100%;
+    width: 200px;
+    height: 200px;
 }
 
 

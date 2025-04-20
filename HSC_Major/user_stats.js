@@ -1,8 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc,
+    onSnapshot 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Your Firebase config (same as in your login page)
+// Your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyAUU2wXBEWT8c-6pOS2iyEjvgQlGzmolRo",
     authDomain: "purrsue-login.firebaseapp.com",
@@ -17,10 +23,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Wait for DOM to load and user to be authenticated
+// Chart instance variable
+let radarChart = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            await initializeUserStats();
             await loadAndRenderStats();
             setupRealTimeUpdates();
         } else {
@@ -29,7 +38,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Initialize stats document if it doesn't exist
+async function initializeUserStats() {
+    if (!auth.currentUser) return;
+    
+    const userStatsRef = doc(db, "users", auth.currentUser.uid, "data", "stats");
+    
+    try {
+        const docSnap = await getDoc(userStatsRef);
+        if (!docSnap.exists()) {
+            await setDoc(userStatsRef, {
+                study: 0,
+                physical: 0,
+                sleep: 0,
+                mental: 0,
+                leisure: 0
+            });
+        }
+    } catch (error) {
+        console.error("Error initializing stats:", error);
+    }
+}
+
 async function loadAndRenderStats() {
+    if (!auth.currentUser) return;
+    
     const userStatsRef = doc(db, "users", auth.currentUser.uid, "data", "stats");
     
     try {
@@ -45,7 +78,6 @@ async function loadAndRenderStats() {
         renderRadarChart(statsData);
     } catch (error) {
         console.error("Error loading stats:", error);
-        // Render with default values if there's an error
         renderRadarChart({
             study: 0,
             physical: 0,
@@ -57,17 +89,18 @@ async function loadAndRenderStats() {
 }
 
 function renderRadarChart(statsData) {
-    const chart = document.getElementById('user_stats');
+    const ctx = document.getElementById('user_stats').getContext('2d');
     
     // Destroy previous chart if it exists
-    if (chart.chart) {
-        chart.chart.destroy();
+    if (radarChart) {
+        radarChart.destroy();
     }
     
-    chart.chart = new Chart(chart, {
+    radarChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
+            labels: 
+            ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
             datasets: [{
                 label: 'Completed Tasks',
                 data: [
@@ -85,6 +118,7 @@ function renderRadarChart(statsData) {
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 r: {
                     angleLines: {
@@ -94,14 +128,19 @@ function renderRadarChart(statsData) {
                     suggestedMax: Math.max(
                         10, 
                         ...Object.values(statsData).map(val => typeof val === 'number' ? val : 0)
-                    ) + 5
+                    ) + 2
                 }
-            }
+            },
+            
         }
     });
 }
 
+
+
 function setupRealTimeUpdates() {
+    if (!auth.currentUser) return;
+    
     const userStatsRef = doc(db, "users", auth.currentUser.uid, "data", "stats");
     
     onSnapshot(userStatsRef, (doc) => {
@@ -110,4 +149,4 @@ function setupRealTimeUpdates() {
             renderRadarChart(statsData);
         }
     });
-}I
+}

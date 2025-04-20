@@ -240,6 +240,7 @@
         let events = [];
         let activeEvent = null;
         let currentUserId = null;
+        let stats = []
 
         // Firebase setup
         const auth = window.firebaseAuth;
@@ -310,76 +311,7 @@
             });
         }
 
-        // Function for handling complete tasks 
-        async function completeTask(eventId) {
-            if (!currentUserId) {
-                showNotification("User not authenticated");
-                return false;
-            }
-
-            try {
-                // Convert eventId to number if it's stored as string
-                eventId = parseInt(eventId);
-                
-                // Find the task to complete
-                const taskToComplete = events.find(e => e.id === eventId);
-                if (!taskToComplete) {
-                    throw new Error("Task not found in events array");
-                }
-
-                // Update stats first
-                await updateUserStats(taskToComplete.type);
-
-                // Then remove the task from events
-                events = events.filter(e => e.id !== eventId);
-                await saveEvents();
-
-                showNotification(`Task "${taskToComplete.title}" completed! +1 to ${taskToComplete.type} stats`);
-                return true;
-            } catch (error) {
-                console.error("Error completing task:", error);
-                showNotification("Error completing task. Please try again.");
-                return false;
-            }
-        }
-
-        // Ensure updateUserStats is properly defined
-        async function updateUserStats(taskType) {
-            if (!currentUserId) return false;
-            
-            const userStatsRef = doc(db, "users", currentUserId, "data", "stats");
-            
-            try {
-                const docSnap = await getDoc(userStatsRef);
-                const currentStats = docSnap.exists() ? docSnap.data() : {
-                    study: 0,
-                    physical: 0,
-                    sleep: 0,
-                    mental: 0,
-                    leisure: 0
-                };
-                
-                // Increment the appropriate stat
-                const statField = {
-                    'study': 'study',
-                    'physical': 'physical',
-                    'sleep': 'sleep',
-                    'mental': 'mental',
-                    'leisure': 'leisure'
-                }[taskType];
-                
-                if (statField) {
-                    currentStats[statField] = (currentStats[statField] || 0) + 1;
-                    await setDoc(userStatsRef, currentStats);
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.error("Error updating stats:", error);
-                throw error;
-            }
-        }
-
+    
         // Save events to Firebase
         async function saveEvents() {
             if (!currentUserId) return;
@@ -511,6 +443,8 @@
             }
         }
 
+        
+
         // Helper function to format dates for display
         function formatDateForDisplay(dateStr) {
             const [year, month, day] = dateStr.split('-');
@@ -524,6 +458,7 @@
 
         // Show event details modal
         function showEventDetails(dateStr) {
+            console.log("Showing event details for:", dateStr);
             const modal = document.getElementById('event-details-modal');
             const modalContent = document.getElementById('event-details-content');
             const modalTitle = document.getElementById('modal-date-title');
@@ -540,13 +475,14 @@
             modalTitle.textContent = `Events for ${formattedDate}`;
             
             const dayEvents = events.filter(e => e.date === dateStr);
+            console.log("Found events for this date:", dayEvents);
             
             if (dayEvents.length === 0) {
                 modalContent.innerHTML = '<p>No events scheduled for this date</p>';
             } else {
                 modalContent.innerHTML = dayEvents.map(event => {
                     return `
-                    <div class="event-detail ${event.type}">
+                    <div class="event-detail ${event.type}" data-event-id="${event.id}">
                         <h3>${event.title}</h3>
                         <p>${event.description || 'No description'}</p>
                         <div class="event-meta">
@@ -554,7 +490,7 @@
                             <span style="color: var(--blue)">Created: ${new Date(event.createdAt).toLocaleString()}</span>
                         </div>
                         <div class="event-actions">
-                            <button class="complete-event" data-id="${event.id}">
+                            <button id="complete-${event.id}" class="complete-event" data-id="${event.id}">
                                 <i class='bx bx-check-circle'></i> Complete
                             </button>
                             <button class="delete-event" data-id="${event.id}">
@@ -564,50 +500,120 @@
                     </div>
                     `;
                 }).join('');
-                
-                // Add event listeners for complete buttons
-                document.querySelectorAll('.complete-event').forEach(btn => {
-                    btn.addEventListener('click', async function(e) {
-                        e.stopPropagation();
-                        const eventId = parseInt(this.dataset.id);
-                        const success = await completeTask(eventId);
-                        
-                        if (success) {
-                            // Refresh the modal to show updated list
-                            const activeDate = document.querySelector('.day.active')?.dataset.date;
-                            if (activeDate) showEventDetails(activeDate);
-                            renderCalendar();
-                            renderDraggableEvents();
-                        }
-                    });
-                });
-                
+
+                // Inside showEventDetails function, after creating the event details HTML:
                 document.querySelectorAll('.delete-event').forEach(btn => {
                     btn.addEventListener('click', async function(e) {
                         e.stopPropagation();
-                        const eventId = parseInt(this.dataset.id);
-                        events = events.filter(e => e.id !== eventId);
-                        try {
-                            await saveEvents();
-                            renderCalendar();
-                            showEventDetails(dateStr);
-                            renderDraggableEvents();
-                        } catch (error) {
-                            console.error("Error deleting event:", error);
-                            showNotification("Error deleting event. Please try again.");
+                        if (confirm('Are you sure you want to delete this task?')) {
+                            const eventId = parseInt(this.dataset.id);
+                            events = events.filter(e => e.id !== eventId);
+                            try {
+                                await saveEvents();
+                                renderCalendar();
+                                showEventDetails(dateStr); // Refresh the modal
+                                renderDraggableEvents();
+                                showNotification('Task deleted successfully');
+                            } catch (error) {
+                                console.error("Error deleting event:", error);
+                                showNotification("Error deleting event. Please try again.");
+                            }
                         }
                     });
+                });
+
+                // Add event listeners to all complete buttons
+                dayEvents.forEach(event => {
+                    const completeBtn = document.getElementById(`complete-${event.id}`);
+                    if (completeBtn) {
+                        completeBtn.addEventListener('click', async function(e) {
+                            e.stopPropagation();
+                            console.log(`Complete button clicked for event ${event.id}`);
+                            
+                            try {
+                                // Update stats
+                                await updateUserStats(event.type);
+                                console.log("Stats updated for type:", event.type);
+                                
+                                // Remove the completed event
+                                events = events.filter(e => e.id !== event.id);
+                                await saveEvents();
+                                console.log("Event removed and saved");
+                                
+                                // Update UI
+                                renderCalendar();
+                                showEventDetails(dateStr);
+                                renderDraggableEvents();
+                                showNotification("Event completed! Stats updated.");
+                            } catch (error) {
+                                console.error("Error completing event:", error);
+                                showNotification("Error completing event. Please try again.");
+                            }
+                        });
+                    } else {
+                        console.error(`Complete button not found for event ${event.id}`);
+                    }
                 });
             }
             
             modal.style.display = 'flex';
         }
 
+
         // Event form toggle
         addEventBtn.addEventListener('click', () => {
             eventForm.style.display = eventForm.style.display === 'none' ? 'block' : 'none';
 
         });
+
+        // Function to initialize or update user stats
+        async function updateUserStats(eventType) {
+            if (!currentUserId) {
+                console.error("No user ID found");
+                throw new Error("User not authenticated");
+            }
+            
+            const userStatsRef = doc(db, "users", currentUserId, "data", "stats");
+            console.log("Updating stats for event type:", eventType);
+            
+            try {
+                const docSnap = await getDoc(userStatsRef);
+                let statsData = {
+                    study: 0,
+                    leisure: 0,
+                    physical: 0,
+                    mental: 0,
+                    sleep: 0,
+                    lastUpdated: new Date().toISOString()
+                };
+
+                if (docSnap.exists()) {
+                    console.log("Existing stats found:", docSnap.data());
+                    statsData = {
+                        ...statsData,
+                        ...docSnap.data()
+                    };
+                }
+
+                // Increment the specific stat
+                if (statsData.hasOwnProperty(eventType)) {
+                    statsData[eventType] += 1;
+                    statsData.lastUpdated = new Date().toISOString();
+                    console.log("New stats value:", statsData);
+                } else {
+                    console.error("Invalid event type:", eventType);
+                    throw new Error("Invalid event type");
+                }
+
+                await setDoc(userStatsRef, statsData);
+                console.log("Stats document successfully written");
+                return true;
+            } catch (error) {
+                console.error("Error in updateUserStats:", error);
+                throw error;
+            }
+        }
+
 
         // Save new event
         saveEventBtn.addEventListener('click', async () => {
@@ -690,31 +696,36 @@
                 ${isScheduled ? `<small>Scheduled for: ${formatDateForDisplay(event.date)}</small>` : ''}
             `;
 
+            // Add event listener for delete button
             eventElement.querySelector('.delete-event').addEventListener('click', async function(e) {
                 e.stopPropagation();
-                const eventId = parseInt(this.dataset.id);
-                events = events.filter(e => e.id !== eventId);
-                try {
-                    await saveEvents();
-                    renderDraggableEvents();
-                } catch (error) {
-                    console.error("Error deleting event:", error);
-                    showNotification("Error deleting event. Please try again.");
+                if (confirm('Are you sure you want to delete this task?')) {
+                    const eventId = parseInt(this.dataset.id);
+                    events = events.filter(e => e.id !== eventId);
+                    try {
+                        await saveEvents();
+                        renderDraggableEvents();
+                        renderCalendar();
+                        showNotification('Task deleted successfully');
+                        
+                        // If the modal is open, refresh it
+                        const modal = document.getElementById('event-details-modal');
+                        if (modal.style.display === 'flex') {
+                            const activeDate = document.querySelector('.day.active')?.dataset.date;
+                            if (activeDate) showEventDetails(activeDate);
+                        }
+                    } catch (error) {
+                        console.error("Error deleting event:", error);
+                        showNotification("Error deleting event. Please try again.");
+                    }
                 }
             });
-
-            if (isScheduled) {
-                eventElement.querySelector('.complete-event').addEventListener('click', async function(e) {
-                    e.stopPropagation();
-                    await completeTask(this.dataset.id);
-                });
-            }
 
             if (!isScheduled) {
                 eventElement.addEventListener('dragstart', () => {
                     activeEvent = eventElement;
                     eventElement.classList.add('dragging');
-                    eventElement.style.opacity = '0.5';
+                    eventElement.style.opacity = '1';
                 });
 
                 eventElement.addEventListener('dragend', () => {
