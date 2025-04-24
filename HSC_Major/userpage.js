@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 
@@ -83,4 +83,34 @@ const search_form = document.querySelector('#content nav form');
   })
 
 
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Logout Functionality
+  const logoutLink = document.getElementById('logout');
+  
+  if (logoutLink) {
+      logoutLink.addEventListener('click', async (e) => {
+          e.preventDefault();
+          
+          // Show confirmation dialog
+          const confirmLogout = confirm('Are you sure you want to log out?');
+          
+          if (confirmLogout) {
+              try {
+                  await signOut(auth);
 
+                  // Clear any stored user data
+                  localStorage.removeItem('loggedInUserId');
+                  
+                  // Redirect to index.html
+                  window.location.href = 'index.html';
+              } catch (error) {
+                  console.error('Error during logout:', error);
+                  alert('There was an error logging out. Please try again.');
+              }
+          }
+      });
+  } else {
+      console.error('Logout link not found!');
+  }
+});

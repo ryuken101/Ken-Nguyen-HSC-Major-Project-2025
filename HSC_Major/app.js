@@ -2,8 +2,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+import { getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+import { 
+    setPersistence, 
+    browserSessionPersistence,
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 
-// Your web app's Firebase configuration
+
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAUU2wXBEWT8c-6pOS2iyEjvgQlGzmolRo",
   authDomain: "purrsue-login.firebaseapp.com",
@@ -17,6 +24,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+
+setPersistence(auth, browserSessionPersistence)
+  .then(() => console.log("Auth persistence enabled"))
+  .catch((err) => console.error("Auth persistence error:", err));
 
 // Home Navbar
 const menu = document.querySelector('#mobile-menu');
@@ -77,7 +89,6 @@ if (submit) {
                     email: email,
                     fName: fName,
                     lName: lName,
-                    password: password,
                     createdAt: new Date()
                 };
                 showMessage('Account Created Successfully', 'signup_message');
@@ -109,24 +120,40 @@ const loginSubmitBtn = document.getElementById('login_submit_btn');
 if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener("click", async (event) => {
         event.preventDefault();
-
-        // Get form values
         const email = document.getElementById('login_email').value;
         const password = document.getElementById('login_password').value;
 
         try {
-            // Sign in the user
+            // Set persistence before signing in
+            await setPersistence(auth, browserSessionPersistence);
+            
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+            
+            // Store basic user data
+            localStorage.setItem('user', JSON.stringify({
+                uid: user.uid,
+                email: user.email
+            }));
 
-            // Store the user's UID in localStorage
-            localStorage.setItem('loggedInUserId', user.uid);
+            // Update user document if needed
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (!userDoc.exists()) {
+                await setDoc(doc(db, "users", user.uid), {
+                    email: user.email,
+                    fName: '',
+                    lName: '',
+                    createdAt: new Date()
+                });
+            }
 
-            // Show success message and redirect
-            showMessage('Login successful! Redirecting...', 'login_message');
+            showMessage('Login successful!', 'login_message');
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000); // Redirect after 2 seconds
+                // Check for redirect parameter or go to dashboard
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || 'dashboard.html';
+                window.location.href = redirect;
+            }, 1500);
         } catch (error) {
             console.error("Error during login:", error);
 
@@ -142,26 +169,18 @@ if (loginSubmitBtn) {
     });
 }
 
-// Logout functionality
-const logoutBtn = document.querySelector('#logout');
 
-if(logoutBtn) {
-    logoutBtn.addEventListener('click', async (e) =>{
-        e.preventDefault();
-        
-        signOut(auth).then(() => {
-            alert('See you soon!')
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000); // Redirect after 2 seconds
+// Video Replay
 
-        }).catch((error) => {
-            alert('An error occurred when logging out')
-        })
-    })
-}
+const demoVid = document.querySelector('video');
+
+demoVid.addEventListener('ended', () => {
+    demoVid.currentTime = 0;
+    demoVid.play();
+})
 
 
+// Settings page
 
 
 

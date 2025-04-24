@@ -60,6 +60,7 @@ async function initializeUserStats() {
     }
 }
 
+
 async function loadAndRenderStats() {
     if (!auth.currentUser) return;
     
@@ -102,7 +103,7 @@ function renderRadarChart(statsData) {
             labels: 
             ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
             datasets: [{
-                label: 'Completed Tasks',
+                label: 'Stat Point',
                 data: [
                     statsData.study || 0,
                     statsData.physical || 0,
@@ -150,3 +151,4 @@ function setupRealTimeUpdates() {
         }
     });
 }
+

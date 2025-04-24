@@ -17,6 +17,9 @@
 	--light-orange: #FFE0D3;
     --green: #6FC276;
     --purple: #BEA9DF;
+    --blur: 1rem;
+    --fs: clamp(2rem, 4vw, 3rem); /* slightly smaller for services h1 */
+    --ls: clamp(-1.75px, -0.25vw, -3.5px);
 }
 /* Navbar CSS */
 * {
@@ -100,6 +103,8 @@
     width: 100%;
 }
 
+
+
 .button {
     display: flex;
     justify-content: center;
@@ -110,13 +115,14 @@
     border: none;
     outline: none;
     border-radius: 4px;
-    background: white;
-    color: #7ec4cf; 
+    background-color: var(--light);
+    color: var(--blue);
 }
 
 .button:hover {
-    background: #daeaf6;
+    transform: scale(1.05);
     transition: all 0.3s ease;
+    background-color: #daeaf6;
 }
 
 .navbar_link:hover {
@@ -374,7 +380,7 @@
 
 /* Services Section 1 */
 .services_container {
-    padding: 150px 20px;
+    padding: 100px 10px;
     background: #accddc;
     display: flex;
     border-radius: 55px; 
@@ -393,20 +399,32 @@
     font-size: 2.5rem;
 }
 
+
 .services h2 {
     color: white;
     margin-left: 30px;
     margin-top: 30px;
 }
 
-/* .content1_container {
+.content1_container {
     background-color: white;
+    height: 450px;
+    width: 620px;
+    position: relative;
     display: flex;
-    padding: 150px 150px;
-    border-radius: 20px; 
-    margin-left: 1000px;
-    margin-bottom: 100px;
-} /*
+    left: 500;
+    border-radius: 25px;
+    animation: bounce 5s infinite;
+    margin-top: 200px;
+    align-items: center;
+    justify-content: center;
+}
+
+.content1_container video {
+ 
+
+
+}
 
 /* Services Section 2 */
 .services_container2 {
@@ -458,6 +476,11 @@
     margin-right: auto;
     margin-left: auto;
     border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+.register_container:hover {
+    transform: scale(1.05); 
 }
 
 .form {
@@ -922,9 +945,7 @@ li {
     cursor: pointer;
 }
 
-#sidebar .side_menu li a .logout-text:hover {
-    color: var(--blue);
-}
+
 
 
 
@@ -984,9 +1005,6 @@ li {
     color: var(--red);
 }
 
-#sidebar .side_menu li a .material-symbols--logout-rounded:hover {
-    color: var(--blue);
-}
 
 /* Sidebar */ 
 
@@ -1249,7 +1267,15 @@ li {
     border-radius: 20px;
     background: var(--light);
     margin-top: 70px;
+    transition: 0.3s ease;
 }
+
+.mid_section .chart_container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--blue);
+}
+
+
 
 .mid_section .chart_container h3 {
     font-size: 26px;
@@ -1275,7 +1301,12 @@ li {
     margin-top: 200px;
     margin-left: 100px;
     position: relative;
+    transition: 0.3s ease;
+}
 
+.task_container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--blue);
 }
 
 .task_container h3 {
@@ -1575,6 +1606,11 @@ li {
     background: var(--light);
     padding: 20px;
     border-radius: 10px;
+    transition: 0.3s ease;
+}
+
+.event-panel:hover {
+    transform: scale(1.05);
 }
 
 
@@ -1636,6 +1672,7 @@ li {
     border-radius: 5px;
     cursor: pointer;
     outline: 3px solid var(--blue);
+    
 }
 
 .save-btn:hover {
@@ -1894,6 +1931,12 @@ li {
     font-size: 1.5rem;
 }
 
+@keyframes bounce {
+    0% { margin-top: 10px; }
+    50% { margin-top: 0px; }
+    100% { margin-top: 10px; }
+}
+
 /* Settings */
 
 
@@ -1908,7 +1951,13 @@ li {
     display: flex;
     margin-left: 100px;
     animation: bounce 6s infinite;
+    padding: 20px;
+    transition: 0.3s ease;
+}
 
+.settings-container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--blue);
 }
 
 .settings h2 {
@@ -1919,90 +1968,162 @@ li {
 .settings p {
     margin-left: 40px;
     margin-top: 20px;
-    
+}
+
+.global-buttons {
+    margin-bottom: 20px;
+    text-align: right; /* Align buttons to right */
+    padding-right: 40px; /* Add some padding */
 }
 
 .settings button {
-    position: relative;
-    left: 300px;
-    margin-top: -22px; 
+    /* Remove absolute positioning */
+    margin-left: 10px;
     background: transparent;
-    outline: none;
     border: none;
     border-radius: 10px;
     height: 30px;
     color: var(--blue);
-    width: 60px;
+    width: 80px; /* Slightly wider */
     transition: 0.5s ease-out;
     box-shadow: inset 0 0 0 0 var(--blue);
-    outline: 3px solid var(--blue);
+    outline: 2px solid var(--blue);
+    cursor: pointer;
 }
 
 .settings button:hover {
-    background-color: white;
-    color: var(--light);
+    color: white;
     box-shadow: inset 0 100px 0 0 var(--blue);
 }
 
-@keyframes bounce {
-    0%   {margin-top: 10px;}
-    50%  {margin-top: 0px}
-    100% {margin-top: 10px;}
-  }
 
-  .field-group {
+.field-group {
     margin-bottom: 20px;
     padding: 15px;
     background: transparent;
     border-radius: 8px;
-    position: relative;
     margin-left: 20px;
-    border: 3px solid var(--blue);
+    margin-right: 20px;
+    border: 2px solid var(--blue);
     transition: 0.3s ease;
+}
 
-  }
+.field-group label {
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+}
 
-  .edit-input {
+.field-value {
+    display: inline-block;
+    min-width: 200px;
+    margin-left: 10px;
+}
+
+
+
+.edit-input {
     padding: 8px;
     width: 200px;
     border: 1px solid #ddd;
     border-radius: 4px;
     display: none;
-  }
-  
-  .button-group {
-    display: flex;
-    gap: 10px;
-  }
+    margin-left: 10px;
+    display: none;
+}
 
-  .cancel-btn {
-    position: relative;
-    left: 300px;
-    margin-top: -22px; 
-    background: transparent;
-    outline: none;
-    border: none;
-    border-radius: 10px;
-    height: 30px;
+
+.edit-btn {
+    color: var(--blue);
+    outline-color: var(--blue);
+}
+
+.save-btn2 {
+    color: var(--green); /* Consider using a different color */
+    outline-color: var(--green);
+    display: none;
+}
+
+.cancel-btn {
     color: var(--red);
-    width: 60px;
-    transition: 0.5s ease-out;
-    box-shadow: inset 0 0 0 0 var(--red);
-    outline: 3px solid var(--red);
-  }
+    outline-color: var(--red);
+    display: none;
+}
 
-  .cancel-btn:hover {
-    background-color: white;
-    color: var(--light);
+#save-all-btn:not(.active), 
+#cancel-all-btn:not(.active) {
+    display: none;
+}
+
+#edit-all-btn.active {
+    display: none;
+}
+
+.edit-btn:hover {
+    box-shadow: inset 0 100px 0 0 var(--blue);
+}
+
+.save-btn2:hover {
+    box-shadow: inset 0 100px 0 0 var(--green);
+}
+
+.cancel-btn:hover {
     box-shadow: inset 0 100px 0 0 var(--red);
-  }
-  
-  #password-display {
-    font-family: monospace;
-    letter-spacing: 2px;
-  }
+}
 
+.pmodal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
 
+.pmodal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.error-message {
+    color: red;
+    margin: 10px 0;
+}
+
+.password-btn {
+    margin-left: 10px;
+    background-color: #ff9800;
+    color: white;
+}
 
 /* Stats Page */
 
@@ -2014,6 +2135,13 @@ li {
     background: var(--light);
     margin-top: 70px;
     margin-left: 100px;
+    animation: bounce 3s infinite;
+    transition: 0.3s ease;
+}
+
+.stats-container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--blue);
 }
 
 #user_stats {

@@ -84,65 +84,82 @@
                         </li>
                         <li><span class="mingcute--right-fill"></span></li>
                         <li>
-                            <a href="settings" class="active">Settings</a>
+                            <a href="settings.html" class="active">Settings</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
             <div class="settings-container">
-                <div class="settings">
-                  <ul>
+            <div class="settings">
+                <ul>
                     <li>
-                      <h2>Account Details</h2>
-                      
-                      <!-- First Name -->
-                      <div class="field-group">
-                        <p>First Name: <span id="fName-value"></span></p>
-                        <input type="text" id="fName-input" class="edit-input">
-                        <div class="button-group">
-                          <button id="fName-edit-btn" class="edit-btn">Edit</button>
-                          <button id="fName-save-btn" class="save-btn">Save</button>
-                          <button id="fName-cancel-btn" class="cancel-btn">Cancel</button>
+                        <h2>Account Details</h2>
+                        
+                        <!-- Global Edit/Save/Cancel buttons -->
+                        <div class="global-buttons">
+                            <button id="edit-all-btn" class="edit-btn">Edit Profile</button>
+                            <button id="save-all-btn" class="save-btn2">Save</button> <!-- removed disabled -->
+                            <button id="cancel-all-btn" class="cancel-btn">Cancel</button> <!-- removed disabled -->
                         </div>
-                      </div>
-                      
-                      <!-- Last Name -->
-                      <div class="field-group">
-                        <p>Last Name: <span id="lName-value"></span></p>
-                        <input type="text" id="lName-input" class="edit-input">
-                        <div class="button-group">
-                          <button id="lName-edit-btn" class="edit-btn">Edit</button>
-                          <button id="lName-save-btn" class="save-btn">Save</button>
-                          <button id="lName-cancel-btn" class="cancel-btn">Cancel</button>
+                        
+                        <!-- First Name -->
+                        <div class="field-group">
+                            <label>First Name:</label>
+                            <span id="fName-value" class="field-value"></span>
+                            <input type="text" id="fName-input" class="edit-input" disabled>
                         </div>
-                      </div>
-                      
-                      <!-- Email -->
-                      <div class="field-group">
-                        <p>Email: <span id="email-value"></span></p>
-                        <input type="email" id="email-input" class="edit-input">
-                        <div class="button-group">
-                          <button id="email-edit-btn" class="edit-btn">Edit</button>
-                          <button id="email-save-btn" class="save-btn">Save</button>
-                          <button id="email-cancel-btn" class="cancel-btn">Cancel</button>
+                        
+                        <!-- Last Name -->
+                        <div class="field-group">
+                            <label>Last Name:</label>
+                            <span id="lName-value" class="field-value"></span>
+                            <input type="text" id="lName-input" class="edit-input" disabled>
                         </div>
-                      </div>
-                      
-                      <!-- Password -->
-                      <div class="field-group">
-                        <p>Password: <span id="password-display">••••••••</span></p>
-                        <input type="password" id="password-input" class="edit-input" placeholder="New Password">
-                        <div class="button-group">
-                          <button id="password-edit-btn" class="edit-btn">Edit</button>
-                          <button id="password-save-btn" class="save-btn">Save</button>
-                          <button id="password-cancel-btn" class="cancel-btn">Cancel</button>
+                        
+                        <!-- Email -->
+                        <div class="field-group">
+                            <label>Email:</label>
+                            <span id="email-value" class="field-value"></span>
+                            <input type="email" id="email-input" class="edit-input" disabled>
                         </div>
-                      </div>
+                        
+                        <!-- Password -->
+                        <div class="field-group">
+                            <label>Password:</label>
+                            <span id="password-value" class="field-value">••••••••</span>
+                            <button id="change-password-btn" class="password-btn" style="display: none;">Change</button>
+                            <input type="password" id="password-input" class="edit-input" placeholder="New Password" disabled>
+                        </div>
                     </li>
-                  </ul>
+                </ul>
+            </div>
+        </div>
+
+        <div id="password-modal" class="pmodal">
+            <div class="pmodal-content">
+                <span id="close-password-modal" class="close">&times;</span>
+                <h3>Change Password</h3>
+                
+                <div class="form-group">
+                    <label>Current Password:</label>
+                    <input type="password" id="current-password" required>
                 </div>
-              </div>
+                
+                <div class="form-group">
+                    <label>New Password:</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Confirm New Password:</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                
+                <p id="password-error" class="error-message"></p>
+                <button id="save-password-btn" class="save-btn">Save Password</button>
+            </div>
+        </div>
 
 
             
@@ -151,9 +168,8 @@
     <!--Main -->
 
     <script type="module" defer src="userpage.js"></script>
-    <script type="module" src="user_stats.js"></script>
-    <script type="module" src="settings.js"></script>
     <script type="module" src="app.js"></script>
+    <script type="module" src="settings.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

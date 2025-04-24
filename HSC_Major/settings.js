@@ -1,219 +1,202 @@
-import { auth, db } from './firebase.js';
-import { 
-  updateEmail, 
-  updatePassword,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
-import { 
-  doc, 
-  getDoc, 
-  updateDoc 
-} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
-// Store original values for cancel functionality
-const originalValues = {
-  fName: '',
-  lName: '',
-  email: '',
-  password: ''
-};
+const auth = getAuth();
+const db = getFirestore();
 
-// Initialize UI
-function initUI() {
-  // Hide all input fields, save and cancel buttons initially
-  document.querySelectorAll('.edit-input').forEach(input => {
-    input.style.display = 'none';
-  });
-  document.querySelectorAll('.save-btn, .cancel-btn').forEach(btn => {
-    btn.style.display = 'none';
-  });
-}
-
-// Load user data
-async function loadUserData(user) {
-  try {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      
-      // Store original values
-      originalValues.fName = userData.fName || '';
-      originalValues.lName = userData.lName || '';
-      originalValues.email = user.email || '';
-      
-      // Display current values
-      document.getElementById('fName-value').textContent = userData.fName || 'Not set';
-      document.getElementById('lName-value').textContent = userData.lName || 'Not set';
-      document.getElementById('email-value').textContent = user.email || 'Not set';
-      
-      // Set input values
-      document.getElementById('fName-input').value = userData.fName || '';
-      document.getElementById('lName-input').value = userData.lName || '';
-      document.getElementById('email-input').value = user.email || '';
-    } else {
-      console.error("User document doesn't exist");
-    }
-  } catch (error) {
-    console.error("Error loading user data:", error);
-    alert("Error loading user data. Please try again later.");
-  }
-}
-
-// Toggle edit mode
-function toggleEditMode(field, isEditing) {
-  const valueEl = document.getElementById(`${field}-value`);
-  const inputEl = document.getElementById(`${field}-input`);
-  const editBtn = document.getElementById(`${field}-edit-btn`);
-  const saveBtn = document.getElementById(`${field}-save-btn`);
-  const cancelBtn = document.getElementById(`${field}-cancel-btn`);
-
-  if (isEditing) {
-    // Switch to edit mode
-    valueEl.style.display = 'none';
-    inputEl.style.display = 'inline-block';
-    editBtn.style.display = 'none';
-    saveBtn.style.display = 'inline-block';
-    cancelBtn.style.display = 'inline-block';
-    
-    // For password, clear the input field when editing
-    if (field === 'password') {
-      document.getElementById('password-input').value = '';
-    }
-  } else {
-    // Switch back to view mode
-    valueEl.style.display = 'inline-block';
-    inputEl.style.display = 'none';
-    editBtn.style.display = 'inline-block';
-    saveBtn.style.display = 'none';
-    cancelBtn.style.display = 'none';
-    
-    // Restore original value if canceling
-    if (field !== 'password') {
-      inputEl.value = originalValues[field];
-    }
-  }
-}
-
-// Cancel edit
-function cancelEdit(field) {
-  toggleEditMode(field, false);
-}
-
-// Save field data
-async function saveField(field, newValue, needsAuth = false) {
-  const user = auth.currentUser;
-  if (!user) {
-    alert("You need to be logged in to make changes.");
-    return;
-  }
-
-  // Validate inputs
-  if (!newValue && field !== 'password') {
-    alert(`Please enter a valid ${field.replace('Name', ' name')}`);
-    return;
-  }
-
-  if (field === 'email' && !/^\S+@\S+\.\S+$/.test(newValue)) {
-    alert("Please enter a valid email address");
-    return;
-  }
-
-  if (field === 'password' && newValue.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
-  }
-
-  try {
-    if (needsAuth) {
-      const password = prompt("Please enter your current password to confirm changes:");
-      if (!password) return; // User canceled
-      
-      const credential = EmailAuthProvider.credential(user.email, password);
-      await reauthenticateWithCredential(user, credential);
-    }
-
-    switch (field) {
-      case 'fName':
-      case 'lName':
-        await updateDoc(doc(db, "users", user.uid), { 
-          [field]: newValue 
-        });
-        document.getElementById(`${field}-value`).textContent = newValue;
-        originalValues[field] = newValue; // Update original value
-        break;
-        
-      case 'email':
-        await updateEmail(user, newValue);
-        await updateDoc(doc(db, "users", user.uid), { 
-          email: newValue 
-        });
-        document.getElementById('email-value').textContent = newValue;
-        originalValues.email = newValue; // Update original value
-        break;
-        
-      case 'password':
-        await updatePassword(user, newValue);
-        document.getElementById('password-input').value = '';
-        alert("Password updated successfully!");
-        break;
-    }
-
-    toggleEditMode(field, false);
-  } catch (error) {
-    console.error(`Error updating ${field}:`, error);
-    let errorMessage = error.message;
-    
-    // More user-friendly error messages
-    if (error.code === 'auth/requires-recent-login') {
-      errorMessage = "This operation is sensitive and requires recent authentication. Please log in again.";
-    } else if (error.code === 'auth/email-already-in-use') {
-      errorMessage = "This email is already in use by another account.";
-    }
-    
-    alert(`Error updating ${field}: ${errorMessage}`);
-  }
-}
-
-// Setup event listeners
-function setupEventListeners() {
-  // Edit buttons
-  document.getElementById('fName-edit-btn').addEventListener('click', () => toggleEditMode('fName', true));
-  document.getElementById('lName-edit-btn').addEventListener('click', () => toggleEditMode('lName', true));
-  document.getElementById('email-edit-btn').addEventListener('click', () => toggleEditMode('email', true));
-  document.getElementById('password-edit-btn').addEventListener('click', () => toggleEditMode('password', true));
-  
-  // Save buttons
-  document.getElementById('fName-save-btn').addEventListener('click', () => 
-    saveField('fName', document.getElementById('fName-input').value.trim()));
-  
-  document.getElementById('lName-save-btn').addEventListener('click', () => 
-    saveField('lName', document.getElementById('lName-input').value.trim()));
-  
-  document.getElementById('email-save-btn').addEventListener('click', () => 
-    saveField('email', document.getElementById('email-input').value.trim(), true));
-  
-  document.getElementById('password-save-btn').addEventListener('click', () => 
-    saveField('password', document.getElementById('password-input').value.trim(), true));
-  
-  // Cancel buttons
-  document.getElementById('fName-cancel-btn').addEventListener('click', () => cancelEdit('fName'));
-  document.getElementById('lName-cancel-btn').addEventListener('click', () => cancelEdit('lName'));
-  document.getElementById('email-cancel-btn').addEventListener('click', () => cancelEdit('email'));
-  document.getElementById('password-cancel-btn').addEventListener('click', () => cancelEdit('password'));
-}
-
-// Initialize everything when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  initUI();
-  
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      await loadUserData(user);
-      setupEventListeners();
-    } else {
-      window.location.href = 'login.html';
-    }
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            initializePage(user);
+        } else {
+            window.location.href = 'login.html?redirect=settings';
+        }
+    });
 });
+
+function initializePage(user) {
+    loadUserData(user.uid);
+    
+    document.getElementById('edit-all-btn').addEventListener('click', enableEditing);
+    document.getElementById('save-all-btn').addEventListener('click', () => saveChanges(user));
+    document.getElementById('cancel-all-btn').addEventListener('click', cancelEditing);
+    
+    // Password change modal setup
+    document.getElementById('change-password-btn')?.addEventListener('click', showPasswordModal);
+    document.getElementById('save-password-btn')?.addEventListener('click', changePassword);
+    document.getElementById('close-password-modal')?.addEventListener('click', hidePasswordModal);
+}
+
+async function loadUserData(uid) {
+    try {
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            
+            // Update display values
+            document.getElementById('fName-value').textContent = userData.fName || '';
+            document.getElementById('lName-value').textContent = userData.lName || '';
+            document.getElementById('email-value').textContent = userData.email || '';
+            
+            // Set input values
+            document.getElementById('fName-input').value = userData.fName || '';
+            document.getElementById('lName-input').value = userData.lName || '';
+            document.getElementById('email-input').value = userData.email || '';
+        }
+    } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Error loading your data. Please try again.");
+    }
+}
+
+function enableEditing() {
+    // Show all input fields except password
+    document.querySelectorAll('.field-value').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.edit-input:not(#password-input)').forEach(input => {
+        input.style.display = 'block';
+        input.disabled = false;
+    });
+    
+    // Toggle buttons
+    document.getElementById('edit-all-btn').style.display = 'none';
+    document.getElementById('save-all-btn').style.display = 'inline-block';
+    document.getElementById('cancel-all-btn').style.display = 'inline-block';
+    document.getElementById('change-password-btn').style.display = 'inline-block';
+}
+
+function cancelEditing() {
+    // Reset to view mode
+    document.querySelectorAll('.field-value').forEach(el => el.style.display = 'inline');
+    document.querySelectorAll('.edit-input').forEach(input => {
+        input.style.display = 'none';
+        input.disabled = true;
+    });
+    
+    document.getElementById('edit-all-btn').style.display = 'inline-block';
+    document.getElementById('save-all-btn').style.display = 'none';
+    document.getElementById('cancel-all-btn').style.display = 'none';
+    document.getElementById('change-password-btn').style.display = 'none';
+    
+    loadUserData(auth.currentUser.uid);
+}
+
+async function saveChanges(user) {
+    const newData = {
+        fName: document.getElementById('fName-input').value.trim(),
+        lName: document.getElementById('lName-input').value.trim(),
+        email: document.getElementById('email-input').value.trim()
+    };
+
+    try {
+        await updateDoc(doc(db, "users", user.uid), newData);
+        
+        // Update displayed values
+        document.getElementById('fName-value').textContent = newData.fName;
+        document.getElementById('lName-value').textContent = newData.lName;
+        document.getElementById('email-value').textContent = newData.email;
+        
+        cancelEditing();
+        alert("Profile updated successfully!");
+    } catch (error) {
+        console.error("Error saving changes:", error);
+        alert("Error saving changes: " + error.message);
+    }
+}
+
+// Password Change Functions
+function showPasswordModal() {
+    document.getElementById('password-modal').style.display = 'flex';
+    document.getElementById('current-password').focus();
+}
+
+function hidePasswordModal() {
+    document.getElementById('password-modal').style.display = 'none';
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    document.getElementById('password-error').textContent = '';
+}
+
+async function changePassword() {
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const errorElement = document.getElementById('password-error');
+    
+    // Clear previous errors
+    errorElement.textContent = '';
+    
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        errorElement.textContent = 'Please fill in all fields';
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        errorElement.textContent = 'New passwords do not match';
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        errorElement.textContent = 'Password must be at least 6 characters';
+        return;
+    }
+
+    const user = auth.currentUser;
+    const email = user.email;
+    
+    try {
+        // Create credential with current email and password
+        const credential = EmailAuthProvider.credential(email, currentPassword);
+        
+        // Reauthenticate user
+        await reauthenticateWithCredential(user, credential);
+        
+        // Update password in Firebase Authentication
+        await updatePassword(user, newPassword);
+        
+        console.log("Password updated in Firebase Auth successfully");
+        
+        // Update Firestore with timestamp (optional)
+        try {
+            await updateDoc(doc(db, "users", user.uid), {
+                passwordLastChanged: new Date().toISOString()
+            });
+            console.log("Password change timestamp updated in Firestore");
+        } catch (firestoreError) {
+            console.error("Error updating Firestore timestamp:", firestoreError);
+            // This isn't critical, so we continue
+        }
+        
+        alert("Password changed successfully!");
+        hidePasswordModal();
+        
+        // Optional: Force logout and redirect to login page
+        setTimeout(() => {
+            auth.signOut().then(() => {
+                window.location.href = 'login.html';
+            });
+        }, 2000);
+        
+    } catch (error) {
+        console.error("Password change error:", error);
+        
+        switch(error.code) {
+            case 'auth/wrong-password':
+                errorElement.textContent = 'Current password is incorrect';
+                break;
+            case 'auth/weak-password':
+                errorElement.textContent = 'Password is too weak (min 6 characters)';
+                break;
+            case 'auth/requires-recent-login':
+                errorElement.textContent = 'Session expired. Please log in again.';
+                // Redirect to login page
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+                break;
+            default:
+                errorElement.textContent = 'Error changing password: ' + error.message;
+        }
+    }
+}
