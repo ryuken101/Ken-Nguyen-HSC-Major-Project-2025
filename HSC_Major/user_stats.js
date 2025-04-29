@@ -8,7 +8,7 @@ import {
     onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Your Firebase config
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyAUU2wXBEWT8c-6pOS2iyEjvgQlGzmolRo",
     authDomain: "purrsue-login.firebaseapp.com",
@@ -115,7 +115,9 @@ function renderRadarChart(statsData) {
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 2,
                 pointBackgroundColor: 'rgba(75, 192, 192, 1)',
-                pointRadius: 4
+                pointRadius: 4,
+
+                
             }]
         },
         options: {
@@ -132,6 +134,7 @@ function renderRadarChart(statsData) {
                     ) + 2
                 }
             },
+            
             
         }
     });
@@ -151,4 +154,6 @@ function setupRealTimeUpdates() {
         }
     });
 }
+
+
 

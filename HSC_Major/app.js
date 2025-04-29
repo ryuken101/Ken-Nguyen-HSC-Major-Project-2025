@@ -1,6 +1,6 @@
 // Import the functions from the SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail  } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 import { getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 import { 
@@ -170,6 +170,25 @@ if (loginSubmitBtn) {
 }
 
 
+// Password Reset 
+if (window.location.pathname.includes('reset-password.html')) {
+    document.getElementById('reset-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('reset_email').value.trim();
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            showMessage('Reset link sent! Check your email.', 'reset_message');
+        } catch (error) {
+            const message = error.code === 'auth/user-not-found' 
+                ? 'No account found with this email.' 
+                : 'Error sending reset link.';
+            showMessage(message, 'reset_message');
+        }
+    });
+}
+
+
 // Video Replay
 
 const demoVid = document.querySelector('video');
@@ -180,7 +199,9 @@ demoVid.addEventListener('ended', () => {
 })
 
 
-// Settings page
+
+
+
 
 
 

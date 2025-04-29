@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>My Pet</title>
     <link rel="stylesheet" href="styles.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
@@ -19,7 +19,7 @@
             <span class="text_d">Dashboard</span>
         </a>
         <ul class="side_menu top">
-            <li class="active">
+            <li>
                 <a href="dashboard.html">
                     <span class="ic--round-home"></span>
                     <span class="sidebar_text">Home</span>
@@ -37,7 +37,7 @@
                     <span class="sidebar_text">Tasks</span>
                 </a>
             </li>
-            <li>
+            <li class="active">
                 <a href="pet.html">
                     <span class="solar--cat-bold"></span>
                     <span class="sidebar_text">My Pet</span>
@@ -77,43 +77,34 @@
         <main>
             <div class="head_title">
                 <div class="left">
-                    <h1>Dashboard</h1>
+                    <h1>My Pet</h1>
                     <ul class="breadcrumb">
                         <li>
                             <a href="#">Dashboard</a>
                         </li>
                         <li><span class="mingcute--right-fill"></span></li>
                         <li>
-                            <a href="#" class="active">Home</a>
+                            <a href="#" class="active">My Pet</a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="mid_section">
-                <div class="chart_container">
-                    <h3>My Stats</h3>
-                    <div>
-                        <canvas id="user_stats"></canvas>
-                    </div>
-                </div>
-                <div class="task_container">
-                    <h3>Tasks</h3>
-                    <div id="dashboard-task" class="dashboard-tasks">
-                        
-                    </div>
-                </div>
+
+            <div class="pet-container">
+                <img src="Animation/kitten-idle.gif" alt="sprite animation" width="200" height="200">
             </div>
+
+        
             
-        </main>
-    </section>
-    <!--Main -->
-
-
-
-
+            <div id="modal-container"></div>
+            
+        </main>  
+        
     <script type="module" defer src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>
     <script type="module" src="app.js"></script>
+    <script type="module" src="pet_stats_notification.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>
+
