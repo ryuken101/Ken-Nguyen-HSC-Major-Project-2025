@@ -148,16 +148,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             }
         }
 
-        async function syncTasksToDashboard() {
-            if (!currentUserId) return;
-
-            // Get today's and future tasks (filter out past events if desired)
-            const upcomingEvents = events.filter(e => e.date && new Date(e.date) >= new Date());
-
-            // Store in Firebase (under a separate field for dashboard access)
-            const userDashboardRef = doc(db, "users", currentUserId, "data", "dashboard");
-            await setDoc(userDashboardRef, { tasks: upcomingEvents }, { merge: true });
-        }
 
         // Initialize calendar
         function renderCalendar() {

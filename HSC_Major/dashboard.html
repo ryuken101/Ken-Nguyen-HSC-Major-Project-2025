@@ -50,7 +50,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" id="logout" class="logout-link">
+                <a id="logout" class="logout-link">
                     <span class="material-symbols--logout-rounded"></span>
                     <span class="logout-text">Logout</span>
                 </a>
@@ -64,12 +64,7 @@
         <!-- Navbar -->
         <nav>
             <span class="material-symbols--menu-rounded"></span>
-            <form action="#">
-                <div class="form_input">
-                    <input type="search" placeholder="Search...">
-                    <button type="submit" class="search_btn"><span class="material-symbols--search-rounded"></span></button>
-                </div>
-            </form>
+            <h3 id="user_name"></h3>
         </nav>
         
 
@@ -98,8 +93,13 @@
                 </div>
                 <div class="task_container">
                     <h3>Tasks</h3>
-                    <div id="dashboard-task" class="dashboard-tasks">
-                        
+                    <form action="#">
+                        <div class="form_input">
+                            <input type="search" id="search" placeholder="Search Tasks...">
+                            <button type="submit" class="search_btn"><span class="material-symbols--search-rounded"></span></button>
+                        </div>
+                    </form>
+                    <div class="task-list" id="task-list">
                     </div>
                 </div>
             </div>
