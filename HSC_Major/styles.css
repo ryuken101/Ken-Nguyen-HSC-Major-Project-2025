@@ -25,15 +25,22 @@
     --physical-color: #BCE69C;
     --mental-color: #91D6D5;
     --sleep-color: #D3ABD7;
+    --background-color: #dddddd;
 }
 
 [theme="light"] {
     --blue: #7ec4cf;
     --light: white;
+    --background-color: #dddddd;
 }
 
 [theme="purple"] {
     --blue: #BEA9DF;
+    --light: #f7eef7;
+}
+
+[theme="green"] {
+    --blue: #BCE69C; 
 }
 /* Navbar CSS */
 * {
@@ -1241,6 +1248,7 @@ li {
     grid-gap: 24px;
     font-family: var(--lato);
     position: relative;
+    width: 100%;
 }
 
 #content nav::before {
@@ -1446,7 +1454,7 @@ li {
 }
 
 #content .task_container form .form_input input:hover {
-    background-color: #dddddd;
+    background-color: var(--background-color);
 }
 
 #content .task_container form .form_input ::placeholder {
@@ -2309,7 +2317,7 @@ li {
 }
 
 .save-btn2 {
-    color: var(--green); /* Consider using a different color */
+    color: var(--green); 
     outline-color: var(--green);
     display: none;
 }
@@ -2395,45 +2403,60 @@ li {
     color: white;
 }
 
-.themes_container {
-    height: 600px;
-    width: 800px;
-    background-color: white;
-    border-radius: 20px;
+.theme-buttons {
     display: flex;
-    margin-left: 100px;
-    animation: bounce 6s infinite;
-    padding: 20px;
-    transition: 0.3s ease;
-    
+    flex-direction: row;
 }
 
-.themes_container:hover {
-    transform: scale(1.05);
-    border: 3px solid var(--blue);
-}
-
-.themes_container .purple-toggle {
-    margin-left: 10px;
+.theme-buttons button {
+    height: 50px;
+    width: 120px;
     background: transparent;
     border: none;
     border-radius: 10px;
-    height: 30px;
-    color: var(--purple);
-    width: 80px; 
-    transition: 0.5s ease-out;
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.theme-buttons .default-toggle {
+    color: #7ec4cf;
+    outline: 2px solid #7ec4cf;
+    box-shadow: inset 0 0 0 0 #7ec4cf;
+}
+
+.theme-buttons .default-toggle:hover {
+    color: white;
+    box-shadow: inset 0 100px 0 0 #7ec4cf;
+}
+
+.theme-buttons .purple-toggle {
+    transition: 0.4s ease-out;
     box-shadow: inset 0 0 0 0 var(--purple);
     outline: 2px solid var(--purple);
     cursor: pointer;
-    margin-top: 80px;
+    color: var(--purple);
 }
 
-.themes_container .purple-toggle:hover {
+.theme-buttons .purple-toggle:hover {
     color: white;
     box-shadow: inset 0 100px 0 0 var(--purple);
 }
 
-.themes_container h2 { 
+.theme-buttons .green-toggle {
+    color: #BCE69C;
+    transition: 0.4s ease-out;
+    box-shadow: inset 0 0 0 0 #BCE69C;
+    outline: 2px solid #BCE69C;
+    cursor: pointer;
+}
+
+.theme-buttons .green-toggle:hover {
+    color: white;
+    box-shadow: inset 0 100px 0 0 #BCE69C;
+}
+
+
+.settings-container h2 { 
     margin-left: 40px;
     margin-top: 40px;
 }
@@ -2565,6 +2588,7 @@ li {
     margin-left: 100px;
     animation: bounce 3s infinite;
     transition: 0.3s ease;
+    float: left;
 }
 
 .stats-container:hover {
@@ -2588,9 +2612,14 @@ li {
     font-size: 26px;
     font-weight: 600;
     color: var(--dark);
-    margin-left: 140px;
     margin-top: 20px;
+    text-align: center;
 }
+
+.Dchart {
+    padding-top: 40px;
+}
+
 
 
 .event-detail {

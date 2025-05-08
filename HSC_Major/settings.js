@@ -201,37 +201,4 @@ async function changePassword() {
     }
 }
 
-// Themes 
 
-function calculateSettingAsThemeString({localStorageTheme, settingPurple}) {
-    if(localStorageTheme !== null) {
-        return localStorageTheme;
-    }
-
-    if(settingPurple.matches) {
-        return "purple";
-    }
-
-    return "light";
-}
-
-const localStorageTheme = localStorage.getItem("theme");
-
-
-
-const settingPurple = window.matchMedia("(prefers-color-scheme: purple)");
- 
-
-let currentThemeSetting = calculateSettingAsThemeString({localStorageTheme, settingPurple});
-
-const purpleToggle = document.querySelector('.purple-toggle');
-
-purpleToggle.addEventListener('click', () => {
-    const purple = currentThemeSetting === "purple" ? "light" : "purple";
-
-    document.querySelector("html").setAttribute("theme", purple);
-
-    localStorage.setItem("theme", purple);
-
-    currentThemeSetting = purple;
-})

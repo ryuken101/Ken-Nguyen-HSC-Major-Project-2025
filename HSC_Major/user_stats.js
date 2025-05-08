@@ -25,6 +25,7 @@ const db = getFirestore(app);
 
 // Chart instance variable
 let radarChart = null;
+let doughnutChart = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, async (user) => {
@@ -77,6 +78,7 @@ async function loadAndRenderStats() {
         };
         
         renderRadarChart(statsData);
+        renderdoughnutChart(statsData);
     } catch (error) {
         console.error("Error loading stats:", error);
         renderRadarChart({
@@ -151,9 +153,61 @@ function setupRealTimeUpdates() {
         if (doc.exists()) {
             const statsData = doc.data();
             renderRadarChart(statsData);
+            renderdoughnutChart(statsData);
         }
     });
 }
 
+function renderdoughnutChart(statsData) {
+    const ctx = document.getElementById('doughnut_chart').getContext('2d');
 
+    // Destroy previous chart if it exists
+    if (doughnutChart) {
+        doughnutChart.destroy();
+    }
 
+    if (doughnutChart = null) {
+        console.log('HHUHHH');
+    }
+
+    doughnutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
+            datasets: [{
+                data: [
+                    statsData.study || 0,
+                    statsData.physical || 0,
+                    statsData.sleep || 0,
+                    statsData.mental || 0,
+                    statsData.leisure || 0
+                ],
+                backgroundColor: [
+                    'rgba(170,185,223, 0.7)',
+                    'rgba(188, 230, 156, 0.7)',
+                    'rgba(211, 171, 215, 0.7)',
+                    'rgba(145, 214, 213, 0.7)',
+                    'rgba(255, 237, 176, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(128, 135, 166, 1)',
+                    'rgba(150, 184, 125, 1)',
+                    'rgba(175, 141, 179, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            },
+            // Ensure the chart maintains aspect ratio
+            maintainAspectRatio: false
+        }
+    });
+}
