@@ -8,30 +8,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const purpleToggle = document.querySelector('.purple-toggle');
     const blueToggle = document.querySelector('.default-toggle');
     const greenToggle = document.querySelector('.green-toggle');
+    const pinkToggle = document.querySelector('.pink-toggle');
+    const greyToggle = document.querySelector('.grey-toggle');
 
-    if(purpleToggle) {
-        purpleToggle.addEventListener('click', () => {
-            const newTheme = document.documentElement.getAttribute("theme") === "purple" ? "light" : "purple";
-            document.documentElement.setAttribute("theme", newTheme);
-            localStorage.setItem("theme", newTheme);
+    colorChange(purpleToggle, "purple");
+    colorChange(blueToggle, "light");
+    colorChange(greenToggle, "green");
+    colorChange(pinkToggle, "pink");
+    colorChange(greyToggle, "grey");
 
-        });
-    }
-
-    if(blueToggle) {
-        blueToggle.addEventListener('click', ()=> {
-            const newTheme = document.documentElement.getAttribute("theme") === "light";
-            document.documentElement.setAttribute("theme", newTheme);
-            localStorage.setItem('theme', newTheme);
-        })
-    }
-
-    if(greenToggle) {
-        greenToggle.addEventListener('click', ()=> {
-            const newTheme = document.documentElement.getAttribute("theme") === "green" ? "light": "green";
-            document.documentElement.setAttribute("theme", newTheme);
-            localStorage.setItem('theme', newTheme);
-        })
-    }
 
 })
+
+function colorChange(button, color) {
+    button.addEventListener('click', () => {
+        const newTheme = document.documentElement.getAttribute("theme") === color ? "light" : color;
+        document.documentElement.setAttribute("theme", newTheme);
+        localStorage.setItem('theme', newTheme);
+    })
+}

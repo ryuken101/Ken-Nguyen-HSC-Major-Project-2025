@@ -8,6 +8,12 @@
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("theme", savedTheme);
+        })();
+    </script>
 
 </head>
 <body class="user_body">
@@ -133,6 +139,8 @@
                         <button type="button" class="default-toggle">Blue</button>
                         <button type="button" class="purple-toggle">Purple</button>
                         <button type="button" class="green-toggle">Green</button>
+                        <button type="button" class="pink-toggle">Pink</button>
+                        <button type="button" class="grey-toggle">Grey</button>
                     </div>
             </div>
         </div>

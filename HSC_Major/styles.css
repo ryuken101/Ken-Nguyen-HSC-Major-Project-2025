@@ -8,9 +8,12 @@
 	--blue: #7ec4cf;
 	--light-blue: #CFE8FF;
 	--grey: #eee;
+    --sidebar-background: #eee;
+    --backdrop-color: #eee;
 	--dark-grey: #AAAAAA;
 	--dark: #342E37;
 	--red: #FF4040;
+    --pink: #ffb3d9;
 	--yellow: #FFCE26;
 	--light-yellow: #FFF2C6;
 	--orange: #FD7238;
@@ -31,17 +34,37 @@
 [theme="light"] {
     --blue: #7ec4cf;
     --light: white;
-    --background-color: #dddddd;
+    --backdrop-color: #eee;
+    --sidebar-background: #eee;
 }
 
 [theme="purple"] {
     --blue: #BEA9DF;
     --light: #f7eef7;
+    --backdrop-color: white;
+    --sidebar-background: white;
 }
 
 [theme="green"] {
     --blue: #BCE69C; 
+    --light: #f9ffe6;
+    --backdrop-color: white;
+    --sidebar-background: white;
 }
+
+[theme="pink"] {
+    --blue: #ffb3d9;
+    --light: #ffebe6;
+    --backdrop-color: #fff7f5;
+    --sidebar-background: #fff7f5;
+}
+
+[theme="grey"] {
+    --blue: #cccccc;
+
+}
+
+
 /* Navbar CSS */
 * {
     box-sizing: border-box;
@@ -187,7 +210,7 @@
         background: #7ec4cf;
         top: 100%;
         opacity: 1;
-        transition: all 0.6s ease;
+        transition: all 0.5s ease;
         z-index: 99;
         height: 50vh;
         font-size: 1.6rem;
@@ -1023,7 +1046,7 @@ li {
   }
 
 .user_body {
-    background: var(--grey);
+    background: var(--backdrop-color);
 }
 
 /* User Sidebar */
@@ -1083,7 +1106,7 @@ li {
 }
 
 #sidebar .side_menu li.active {
-    background: var(--grey);
+    background: var(--sidebar-background);
     position: relative;
 }
 
@@ -1095,7 +1118,7 @@ li {
     border-radius: 50%;
     top: -40px;
     right: 0;
-    box-shadow: 20px 20px 0 var(--grey);
+    box-shadow: 20px 20px 0 var(--sidebar-background);
     z-index: -1;
   
 }
@@ -1108,7 +1131,7 @@ li {
     border-radius: 50%;
     bottom: -40px;
     right: 0;
-    box-shadow: 20px -20px 0 var(--grey);
+    box-shadow: 20px -20px 0 var(--sidebar-background);
     z-index: -1;
 }
 
@@ -2222,9 +2245,9 @@ li {
 /* Settings */
 
 .settings-container {
-    height: 600px;
+    height: 680px;
     width: 800px;
-    background-color: white;
+    background-color: var(--light);
     border-radius: 20px;
     position: relative;
     display: flex;
@@ -2411,7 +2434,7 @@ li {
 .theme-buttons button {
     height: 50px;
     width: 120px;
-    background: transparent;
+    background: white;
     border: none;
     border-radius: 10px;
     margin-top: 10px;
@@ -2455,6 +2478,31 @@ li {
     box-shadow: inset 0 100px 0 0 #BCE69C;
 }
 
+.theme-buttons .pink-toggle {
+    color: #ffb3d9;
+    transition :0.4s ease-out; 
+    box-shadow: inset 0 0 0 0 #ffb3d9;
+    outline: 2px solid #ffb3d9;
+    cursor: pointer;
+}
+
+.theme-buttons .pink-toggle:hover {
+    color: white;
+    box-shadow: inset 0 100px 0 0 #ffb3d9;
+}
+
+.theme-buttons .grey-toggle {
+    color: #cccccc;
+    box-shadow: inset 0 0 0 0 #cccccc;
+    outline: 2px solid #cccccc;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.theme-buttons .grey-toggle:hover{
+    color: white;
+    box-shadow: inset 0 100px 0 0 #cccccc;
+}
 
 .settings-container h2 { 
     margin-left: 40px;
@@ -2465,13 +2513,17 @@ li {
 
 .pet-container {
     background-color: white;
-    width: 200px;
-    margin-left: 100px;
+    width: 400px;
+    height: 400px;
+    margin-left: 400px;
+    margin-right: auto;
     border-radius: 20px;
 }
 
 .pet-container img {
     margin-right: 10px;
+    width: 400px;
+    height: 400px;
 }
 
 .modal-overlay {
@@ -2576,6 +2628,31 @@ li {
     to { opacity: 0; }
 }
 
+.clock-container {
+    text-align: center;
+    background-color: white;
+    margin-top: 40px;
+    width: 600px;
+    border-radius: 20px;
+    margin-left: 300px;
+    transition: 0.2s ease;
+}
+
+.clock-container:hover {
+    transform: scale(1.05);
+    border: 3px solid var(--blue);
+}
+
+.digital-clock {
+    font-size: 5rem;
+    color: var(--blue);
+    margin-bottom: 20px;
+}
+
+.date {
+    font-size: 1.5rem;
+    color: var(--blue);
+}
 /* Stats Page */
 
 .stats-container {
