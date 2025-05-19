@@ -94,6 +94,8 @@
             <div class="pet-container">
                 <img src="Animation/kitten-idle.gif" alt="sprite animation" width="200" height="200">
             </div>
+
+            
             <div class="clock-container">
                 <div class="digital-clock">
                     <span id="hours">00</span>
@@ -110,8 +112,22 @@
                     <span id="year">Year</span>
                 </div>
             </div>
-        
             
+            <div class="pet-settings">
+                <h3>Pet Sleep Schedule</h3>
+                <div class="time-inputs">
+                  <label>
+                    Bedtime: 
+                    <input type="time" id="bedtime-input" value="22:00">
+                  </label>
+                  <label>
+                    Wake-up: 
+                    <input type="time" id="wakeup-input" value="07:00">
+                  </label>
+                  <button id="save-sleep-times" class="save-btn">Save</button>
+                </div>
+              </div>
+        
             <div id="modal-container"></div>
             
         </main>  

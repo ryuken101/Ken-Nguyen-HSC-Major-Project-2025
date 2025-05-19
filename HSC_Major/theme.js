@@ -9,13 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const blueToggle = document.querySelector('.default-toggle');
     const greenToggle = document.querySelector('.green-toggle');
     const pinkToggle = document.querySelector('.pink-toggle');
-    const greyToggle = document.querySelector('.grey-toggle');
+    const darkBlueToggle = document.querySelector('.foam-toggle');
+    const amberToggle = document.querySelector('.amber-toggle');
+    const babyBlueToggle = document.querySelector('.baby-blue-toggle');
+    const coralToggle = document.querySelector('.coral-toggle');
+
 
     colorChange(purpleToggle, "purple");
     colorChange(blueToggle, "light");
     colorChange(greenToggle, "green");
     colorChange(pinkToggle, "pink");
-    colorChange(greyToggle, "grey");
+    colorChange(darkBlueToggle, "foam");
+    colorChange(amberToggle, "amber");
+    colorChange(babyBlueToggle, "baby-blue")
+    colorChange(coralToggle, "coral")
+
 
 
 })

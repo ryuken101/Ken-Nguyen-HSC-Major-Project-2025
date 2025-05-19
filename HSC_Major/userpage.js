@@ -34,17 +34,47 @@ document.addEventListener('DOMContentLoaded', () => {
   // Check auth state and load tasks
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      currentUserId = user.uid;
-      
-      // Display the user's name
-      const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
+        currentUserId = user.uid;
+        
+        // Display the user's name with proper error handling
+        try {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userDocRef);
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        const userName = `${userData.fName} ${userData.lName}`;
-        document.getElementById('user_name').textContent = userName;
-      }
+            const userNameElement = document.getElementById('user_name');
+            if (!userNameElement) {
+                console.error("User name element not found in DOM");
+                return;
+            }
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                
+                // Check for different possible name field formats
+                let displayName = '';
+                
+                if (userData.firstName && userData.lastName) {
+                    displayName = `${userData.firstName} ${userData.lastName}`;
+                } 
+
+                else if (userData.name) {
+                    displayName = userData.name;
+                }
+
+
+                
+                userNameElement.textContent = displayName;
+            } else {
+
+                userNameElement.textContent = user.email || 'User';
+            }
+        } catch (error) {
+            console.error("Error loading user data:", error);
+            const userNameElement = document.getElementById('user_name');
+            if (userNameElement) {
+                userNameElement.textContent = user.email || 'User';
+            }
+        }
       
       // Load and set up real-time updates for tasks
       loadUserTasks();
@@ -71,9 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebar.classList.toggle('hide');
   });
 
-  if (window.innerWidth < 768) {
-    sidebar.classList.add('hide');
+window.onresize = function(){
+  if (window.innerWidth < 600) {
+    sidebar.classList.toggle('hide');
   }
+} 
+
+
+
 
   // Logout Functionality
   document.getElementById('logout').addEventListener('click', async (e) => {

@@ -34,14 +34,14 @@ async function loadUserData(uid) {
             const userData = userDoc.data();
             
             // Update display values
-            document.getElementById('fName-value').textContent = userData.fName || '';
-            document.getElementById('lName-value').textContent = userData.lName || '';
-            document.getElementById('email-value').textContent = userData.email || '';
+            document.getElementById('fName-value').textContent = userData.fName;
+            document.getElementById('lName-value').textContent = userData.lName;
+            document.getElementById('email-value').textContent = userData.email;
             
             // Set input values
-            document.getElementById('fName-input').value = userData.fName || '';
-            document.getElementById('lName-input').value = userData.lName || '';
-            document.getElementById('email-input').value = userData.email || '';
+            document.getElementById('fName-input').value = userData.fName;
+            document.getElementById('lName-input').value = userData.lName;
+            document.getElementById('email-input').value = userData.email;
         }
     } catch (error) {
         console.error("Error loading data:", error);

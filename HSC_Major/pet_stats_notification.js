@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Function to find the field with the lowest stat (unchanged)
+// Function to find the field with the lowest stat 
 function getLowestStat(statsData) {
     const stats = {
         study: statsData.study || 0,
@@ -73,6 +73,7 @@ function showLowStatNotification(lowestStatInfo) {
             <h3>Your pet is concerned! <i class='bx bx-heart-circle'></i></h3>
             <p>Your ${statNames[lowestStatInfo.stat]} stat is getting low (${lowestStatInfo.value} points).</p>
             <p>Consider completing some tasks in this category to improve your balance!</p>
+            <img src="Animation/kitten-cry.gif" alt="sprite animation" width="200" height="200">
             <button id="close-modal">OK, I'll work on it!</button>
         </div>
         <div class="modal-overlay"></div>
