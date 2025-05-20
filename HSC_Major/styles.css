@@ -777,20 +777,44 @@
 
 
 /* Sign up Page */
+.pet-login {
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+.pet-signup {
+    position: absolute;
+    top: -69px;
+    left: 50%;
+    transform: translateX(-55%);
+    z-index: 2;
+}
+
+.login-wrapper {
+    position: relative; /* Important for absolute children */
+    width: fit-content;
+    margin: auto;
+}
+
 .register_container {
     background-color: #7ec4cf;
     width: 450px;
     padding: 1.5rem;
-    margin-top: 100px;
     margin-right: auto;
     margin-left: auto;
     border-radius: 10px;
     transition: 0.3s ease;
+    top: 70px;
+    position: relative;
 }
 
 .register_container:hover {
-    transform: scale(1.05); 
+    transform: scale(1.02); 
 }
+
 
 .form {
     margin: 0 2rem;
@@ -958,11 +982,13 @@ input::placeholder {
     height: 40px;
     border-radius: 10px;
     color: var(--blue);
-    align-items: center;
+    display: block;
 }
 
 #login_message {
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #signup_message {
@@ -1337,6 +1363,7 @@ li {
 }
 
 
+
 /* Sidebar */ 
 
 /* Dashboard Content */ 
@@ -1646,6 +1673,7 @@ li {
 
 .task-list::-webkit-scrollbar {
     width: 6px;
+    
   }
   
   .task-list::-webkit-scrollbar-track {
@@ -2339,11 +2367,11 @@ li {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.3s ease;
 }
 
 .close-modal:hover {
     color: var(--blue);
-    transition: 0.3s ease;
 }
 
 .event-detail {
@@ -2411,7 +2439,6 @@ li {
     color: #ff1a1a;
 }
 
-/* Highlight for drag-over dates */
 .day.drag-over {
     background-color: var(--blue);
     color: white;
@@ -2440,7 +2467,6 @@ li {
     transition: 0.3s ease;
 }
 
-
 .day.active {
     font-size: 1.5rem;
 }
@@ -2449,6 +2475,194 @@ li {
     0% { margin-top: 10px; }
     50% { margin-top: 0px; }
     100% { margin-top: 10px; }
+}
+
+/* Mobile Responsive Styles */
+@media only screen and (max-width: 1200px) {
+    .calendar_container {
+        width: 95%;
+        flex-direction: column;
+        min-height: auto;
+        padding: 10px;
+    }
+
+
+    .left {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .calendar {
+        margin-bottom: 20px;
+    }
+
+    .calendar:hover {
+        transform: none; 
+    }
+
+    .calendar::before,
+    .calendar::after {
+        display: none;
+    }
+
+    .event-panel {
+        position: relative;
+        right: auto;
+        top: auto;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .event-panel:hover {
+        transform: scale(1.01);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .calendar_container {
+        padding: 5px;
+    }
+
+    .calendar .month {
+        padding: 0 20px;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+
+    .calendar .weekdays {
+        height: 50px;
+        font-size: 0.8rem;
+        padding: 0 10px;
+    }
+
+    .calendar .days {
+        padding: 0 10px;
+    }
+
+    .calendar .days .day {
+        height: 60px;
+        font-size: 0.9rem;
+    }
+
+    .calendar .days .active,
+    .calendar .days .today {
+        font-size: 1.5rem;
+    }
+
+    .calendar .goto-today {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    .calendar .goto-today .goto {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .calendar .goto-today button {
+        width: 100%;
+    }
+
+    .event-form {
+        padding: 10px;
+    }
+
+    .event-panel:hover {
+        transform: none;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .events-list {
+        padding: 10px;
+    }
+
+    .day.has-event::after {
+        width: 30px;
+        height: 5px;
+        margin-bottom: 3px;
+        margin-top: 40px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .calendar .month {
+        padding: 0 10px;
+    }
+
+    .calendar .days .day {
+        height: 50px;
+        font-size: 0.8rem;
+    }
+
+    .calendar .days .active,
+    .calendar .days .today {
+        font-size: 1.2rem;
+    }
+
+    .day.has-event::after {
+        width: 30px;
+        height: 5px;
+        margin-bottom: 10px;
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .event-panel {
+        padding: 10px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}
+
+/* Breadcrumb adjustments */
+@media only screen and (max-width: 480px) {
+    .breadcrumb {
+        flex-wrap: wrap;
+    }
+
+    .breadcrumb li {
+        margin-bottom: 5px;
+    }
+}
+
+/* Event panel adjustments */
+@media only screen and (max-width: 768px) {
+    .event-panel {
+        transform: none !important;
+    }
+
+    .draggable-event {
+        padding: 8px;
+    }
+}
+
+/* Modal adjustments */
+@media only screen and (max-width: 480px) {
+    .modal-content {
+        padding: 10px;
+    }
+
+    .event-detail {
+        padding: 10px;
+    }
+}
+
+/* Hide some elements on very small screens */
+@media only screen and (max-width: 360px) {
+    .calendar .weekdays div {
+        font-size: 0.7rem;
+    }
+
+    .calendar .days .day {
+        height: 40px;
+    }
 }
 
 /* Settings */
@@ -2775,6 +2989,10 @@ li {
     height: 400px;
 }
 
+.pet-container img:hover {
+    cursor: grab;
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -2941,6 +3159,145 @@ li {
   .save-btn:hover {
     background-color: white;
   }
+
+  /* Mobile Responsive Styles */
+@media only screen and (max-width: 1200px) {
+    .pet-container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 350px;
+        height: 350px;
+    }
+    
+    .pet-container img {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .clock-container {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .pet-settings {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .pet-container {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .pet-container img {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .digital-clock {
+        font-size: 3.5rem;
+    }
+    
+    .date {
+        font-size: 1.2rem;
+    }
+    
+    .pet-settings {
+        width: 80%;
+    }
+    
+    .time-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .time-inputs label {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .save-btn {
+        width: 100%;
+        padding: 8px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .pet-container {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .pet-container img {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .digital-clock {
+        font-size: 2.5rem;
+    }
+    
+    .date {
+        font-size: 1rem;
+    }
+    
+    .clock-container {
+        width: 90%;
+    }
+    
+    .pet-settings {
+        width: 90%;
+        padding: 15px;
+    }
+    
+    .low-stat-modal {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .low-stat-modal h3 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Animation adjustments for mobile */
+@media only screen and (max-width: 768px) {
+    .clock-container:hover,
+    .pet-settings:hover {
+        transform: none;
+        border: none;
+    }
+    
+    .pet-container img:hover {
+        cursor: default;
+    }
+}
+
+/* Very small screens */
+@media only screen and (max-width: 360px) {
+    .pet-container {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .pet-container img {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .digital-clock {
+        font-size: 2rem;
+    }
+    
+    .colon {
+        display: inline-block;
+        width: 0.5rem;
+    }
+}
 /* Stats Page */
 
 .stats-container {
@@ -2985,6 +3342,20 @@ li {
     padding-top: 40px;
 }
 
+@media (max-width: 768px) {
+    .stats-container {
+        margin: 40px auto 20px;
+    }
+    
+    #content main {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    #user_stats, #doughnut_chart {
+        animation: none;
+    }
+}
 
 
 .event-detail {

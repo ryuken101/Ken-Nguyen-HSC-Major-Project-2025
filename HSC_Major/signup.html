@@ -43,35 +43,40 @@
     
 
          <!-- Register Form-->
-        <div class="register_container" id="signup">
-            <h1 class="form-title">SignUp</h1>
-            <form id="signup-form">
-                <div id="signup_message" class="messageDiv" style="display: none;">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" name="fName" id="fName" placeholder="First Name">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" name="lName" id="lName" placeholder="Last Name">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" id="email" placeholder="Email" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" placeholder="Password" required>
-                </div>
-                <input type="submit" class="btn" value="Sign Up" name="signup" id="submit_btn">
-            </form>
-            <p class="or">
-                -------or-------
-            </p>
-            <div class="links">
-                <p>Already Have Account?</p>
-                <a href="login.html">Login</a>
+         <div class="login-wrapper">
+            <div class="pet-signup">
+                <img src="Animation/kitten-happy.gif" alt="sprite animation" width="150" height="150">
             </div>
-        </div>
+            <div class="register_container" id="signup">
+                <h1 class="form-title">SignUp</h1>
+                <form id="signup-form">
+                    <div id="signup_message" class="messageDiv" style="display: none;">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="fName" id="fName" placeholder="First Name">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="lName" id="lName" placeholder="Last Name">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+                    <input type="submit" class="btn" value="Sign Up" name="signup" id="submit_btn">
+                </form>
+                <p class="or">
+                    -------or-------
+                </p>
+                <div class="links">
+                    <p>Already Have Account?</p>
+                    <a href="login.html">Login</a>
+                </div>
+            </div>
+         </div> 
         <script type="module" defer src="app.js"></script>

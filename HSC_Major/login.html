@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Login</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
@@ -40,29 +40,34 @@
         </div>
     </nav>
         <!-- Login Form-->
-        <div class="register_container" id="login">
-            <h1 class="form-title">Login</h1>
-            <form id="login-form">
-                <div id="login_message" class="messageDiv" style="display: none;"></div>
-                <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" name="email" id="login_email" placeholder="Email" required>
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="login_password" placeholder="Password" required>
-                </div>
-                <p class="recover">
-                    <a href="reset-password.html" class="reset-link">Forgot Password?</a>
+        <div class="login-wrapper">
+            <div class="pet-login">
+                <img src="Animation/kitten-sleeping.gif" alt="sprite animation" width="150" height="150">
+             </div>
+            <div class="register_container" id="login">
+                <h1 class="form-title">Login</h1>
+                <form id="login-form">
+                    <div id="login_message" class="messageDiv" style="display: none;"></div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" id="login_email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login_password" placeholder="Password" required>
+                    </div>
+                    <p class="recover">
+                        <a href="reset-password.html" class="reset-link">Forgot Password?</a>
+                    </p>
+                    <input type="submit" class="btn" value="Login" name="Login" id="login_submit_btn">
+                </form>
+                <p class="or">
+                    -------or-------
                 </p>
-                <input type="submit" class="btn" value="Login" name="Login" id="login_submit_btn">
-            </form>
-            <p class="or">
-                -------or-------
-            </p>
-            <div class="links">
-                <p>Don't Have Account?</p>
-                <a href="signup.html">Sign Up</a>
+                <div class="links">
+                    <p>Don't Have Account?</p>
+                    <a href="signup.html">Sign Up</a>
+                </div>
             </div>
-        </div>
+         </div>
     <script type="module" src="app.js" defer></script>

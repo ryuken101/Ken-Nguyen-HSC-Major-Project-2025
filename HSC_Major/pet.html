@@ -92,7 +92,7 @@
             </div>
 
             <div class="pet-container">
-                <img src="Animation/kitten-idle.gif" alt="sprite animation" width="200" height="200">
+                <img src="Animation/kitten-idle.gif" alt="sprite animation" width="200" height="200" id="pet" onclick="changeImg()">
             </div>
 
             
@@ -131,6 +131,25 @@
             <div id="modal-container"></div>
             
         </main>  
+
+        <script>
+            // Pet 
+            const pet = document.getElementById('pet');
+            const petSleep = 'Animation/kitten-sleep.gif'
+            const petHappy = 'Animation/kitten-happy.gif'
+            let toggle = true;
+
+            function changeImg () {
+                if(toggle == true) {
+                    pet.src = petHappy;
+                }
+                else {
+                    pet.src = 'Animation/kitten-idle.gif';
+
+                }
+                toggle = !toggle;
+            }
+        </script>
         
     <script type="module" defer src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>
@@ -138,6 +157,7 @@
     <script type="module" src="pet_stats_notification.js"></script>
     <script type="module" src="theme.js"></script>
     <script type="module" src="time.js"></script>
+    <script type="module" src="auth-state.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

@@ -139,7 +139,7 @@
                 </div>
                 <div class="form-group">
                     <label for="event-description">Description:</label>
-                    <textarea id="event-description" placeholder="Enter event description" maxlength="40"></textarea>
+                    <input id="event-description" placeholder="Enter event description" maxlength="40"></input>
                     <div class="counter">
                         <p id="counter_characters">0</p>/<p>40</p>
                     </div>
@@ -186,18 +186,19 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-        const description = document.getElementById('event-description');
-        const charCount = document.getElementById('counter_characters');
-        const title = document.getElementById('event-title');
-        const titleCount = document.getElementById('title_characters');
+            const description = document.getElementById('event-description');
+            const charCount = document.getElementById('counter_characters');
+            const title = document.getElementById('event-title');
+            const titleCount = document.getElementById('title_characters');
 
-        description.addEventListener("input", function() {
-            charCount.textContent = description.value.length;
-        });
+            description.addEventListener("input", function() {
+                charCount.textContent = description.value.length;
+            });
 
-        title.addEventListener("input", function() {
-            titleCount.textContent = title.value.length;
-        })
+            title.addEventListener("input", function() {
+                titleCount.textContent = title.value.length;
+            })
+            
     });
     </script>
    
@@ -207,6 +208,7 @@
     <script type="module" src="user_stats.js"></script>
     <script type="module" src="app.js"></script>
     <script type="module" src="theme.js"></script>
+    <script type="module" src="auth-state.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>

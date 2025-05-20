@@ -197,14 +197,3 @@ demoVid.addEventListener('ended', () => {
     demoVid.currentTime = 0;
     demoVid.play();
 })
-
-
-
-
-
-
-
-
-
-
-
