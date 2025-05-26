@@ -49,6 +49,9 @@ const logInButton = document.getElementById('login_button');
 const logInForm = document.getElementById('login');
 const signUpForm = document.getElementById('signup');
 
+const petLogged = document.getElementById('petLogged');
+const petHappy = 'Animation/kitten-happy.gif';
+
 if (signUpButton && logInButton) {
     signUpButton.addEventListener('click', function() {
         logInForm.style.display = "none";
@@ -148,6 +151,7 @@ if (loginSubmitBtn) {
             }
 
             showMessage('Login successful!', 'login_message');
+            petLogged.src = petHappy;
             setTimeout(() => {
                 // Check for redirect parameter or go to dashboard
                 const urlParams = new URLSearchParams(window.location.search);

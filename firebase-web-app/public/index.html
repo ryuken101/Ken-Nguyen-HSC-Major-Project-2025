@@ -1,0 +1,127 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="images/website_logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar Section -->
+    <nav class="navbar">
+        <div class="navbar_container">
+            <a href="index.html" id="navbar_logo">
+                <img src="images/website_logo.png" alt="logo" class="website_logo">
+            </a>
+            <div class="navbar_toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="navbar_menu">
+                <li class="navbar_item">
+                    <a href="index.html" class="navbar_link">Home</a>
+                </li>
+                <li class="navbar_item">
+                    <a href="login.html" class="navbar_link">Login</a>
+                </li>
+                <li class="navbar_item">
+                    <a href="about.html" class="navbar_link">About</a>
+                </li>
+                <li class="navbar_btn">
+                    <a href="signup.html" class="button">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="view">
+        <div class="main">
+            <div class="main_container">
+                <div class="main_content">
+                    <h1>Create Your Own</h1>
+                    <h2>Future</h2>
+                    <p>Start Now</p>
+                    <button class="main_btn">
+                        <a href="signup.html">Get Started</a>
+                    </button>
+                </div>
+                <div class="main_img-container">
+                    <img src="images/heroimage1.svg" alt="pic" id="main_img">
+                </div>
+            </div>
+        </div>
+
+        <div class="services">
+            <div class="services_container">
+                <div class="services-content1">
+                    <h1>Create And Track Your Own Tasks</h1>
+                    <h2>On Your Interactive Calendar</h2>
+                    <h2>Through Drag and Drop</h2>
+                    <div class="content1_container">
+                        <video class="responsive-video" autoplay loop muted playsinline>
+                            <source src="Videos/Task-demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="services2">
+            <div class="services_container2">
+                <div class="content-text">
+                    <h1>Analyse And Improve</h1>
+                    <h2>Your Stats in Life</h2>
+                </div>
+                <div class="services_content2">
+                    <video class="responsive-video" autoplay loop muted playsinline>
+                        <source src="Videos/Stats-demo.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <div class="services3">
+            <div class="services_container3">
+                <div class="services_content3">
+                    <h1>Struggling with discipline?</h1>    
+                    <h2>Let your little friend hold you</h2>
+                    <h2>Accountable</h2>
+                    <div class="content3_container">
+                        <video class="responsive-video" autoplay loop muted playsinline>
+                            <source src="Videos/Pet-demo.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <div class="index-kitten">
+            <img src="Animation/kitten-happy.gif" alt="sprite animation" width="200" height="200">
+        </div>
+
+        <button class="bottom-btn">
+            <a href="signup.html">Get Started</a>
+        </button>
+
+        <footer class="footer">
+            <div class="footer_container">
+                <div class="footer_links">
+                    <a href="index.html" class="footer_link">Home</a>
+                    <a href="about.html" class="footer_link">About</a>
+                    <a href="login.html" class="footer_link">Login</a>
+                    <a href="signup.html" class="footer_link">Sign Up</a>
+                </div>
+                <div class="footer_socials">
+                    <a href="#" class="social_icon"><i class="fab fa-instagram"></i></a>
+                </div>
+                <p class="footer_copy">2025 Purrsue. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+    <script type="module" defer src="app.js"></script>
+</body>
+</html>
