@@ -60,7 +60,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
         let events = [];
         let activeEvent = null;
         let currentUserId = null;
-        let stats = []
+        let stats = [];
+
+       //Level Up System 
+        let level = 1;
+        let xp = 0;
+        const xp_max = 10;
+        const currentLevel = document.getElementById('level');
+        const currentXp = document.getElementById('xp'); 
 
         // Firebase setup
         const auth = window.firebaseAuth;
@@ -74,11 +81,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
         ];
 
         // Check authentication state
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserId = user.uid;
                 loadUserEvents();
                 setupRealTimeUpdates();
+                await loadUserStats();
             } else {
                 window.location.href = 'index.html';
             }
@@ -394,6 +402,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                     physical: 0,
                     mental: 0,
                     sleep: 0,
+                    level: 1,
+                    XP: 0,
                     lastUpdated: new Date().toISOString()
                 };
 
@@ -408,6 +418,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                 // Increment the specific stat
                 if (statsData.hasOwnProperty(eventType)) {
                     statsData[eventType] += 1;
+                    statsData.XP += 1;
+                    if (statsData.XP >= xp_max) {
+                        statsData.level += 1;
+                        statsData.XP = 0;
+                        alert(`Congratulations! You have leveled up! You're now level ${statsData.level}`);
+                    }
                     statsData.lastUpdated = new Date().toISOString();
                     console.log("New stats value:", statsData);
                 } else {
@@ -416,6 +432,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                 }
 
                 await setDoc(userStatsRef, statsData);
+                level = statsData.level;
+                xp = statsData.XP;
+                updateDisplay();
                 console.log("Stats document successfully written");
                 return true;
             } catch (error) {
@@ -424,6 +443,40 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             }
         }
 
+        function updateDisplay() {
+            currentLevel.textContent = `Level: ${level}`;
+            currentXp.textContent = `XP: ${xp} / 10`;
+        }
+
+        async function loadUserStats() {
+            if (!currentUserId) return;
+            
+            const userStatsRef = doc(db, "users", currentUserId, "data", "stats");
+            
+            try {
+                const docSnap = await getDoc(userStatsRef);
+                if (docSnap.exists()) {
+                    const statsData = docSnap.data();
+                    level = statsData.level || 1;
+                    xp = statsData.XP || 0;
+                    updateDisplay();
+                } else {
+                    // Initialize stats if they don't exist
+                    await setDoc(userStatsRef, {
+                        level: 1,
+                        XP: 0,
+                        study: 0,
+                        leisure: 0,
+                        physical: 0,
+                        mental: 0,
+                        sleep: 0,
+                        lastUpdated: new Date().toISOString()
+                    });
+                }
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        }
 
         // Save new event
         saveEventBtn.addEventListener('click', async () => {
