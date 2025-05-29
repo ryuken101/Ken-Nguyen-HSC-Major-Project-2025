@@ -32,26 +32,20 @@ function getLowestStat(statsData) {
         leisure: statsData.leisure || 0
     };
     
-    const validStats = Object.entries(stats).filter(([_, value]) => typeof value === 'number');
+    // Convert to array and sort by value
+    const sortedStats = Object.entries(stats)
+        .sort((a, b) => a[1] - b[1]);
     
-    if (validStats.length === 0) return null;
-    
-    const lowestStatEntry = validStats.reduce((min, current) => 
-        current[1] < min[1] ? current : min
-    );
-    
+    // Return the stat with lowest value
     return {
-        stat: lowestStatEntry[0],
-        value: lowestStatEntry[1]
+        stat: sortedStats[0][0],
+        value: sortedStats[0][1]
     };
 }
 
-// Function to show modal notification (unchanged)
+// Function to show modal notification for the lowest stat
 function showLowStatNotification(lowestStatInfo) {
     if (!lowestStatInfo) return;
-    
-    const threshold = 3;
-    if (lowestStatInfo.value >= threshold) return;
     
     let modalContainer = document.getElementById('modal-container');
     if (!modalContainer) {
@@ -138,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             checkStatsForPetPage();
-            setupPetStatsListener(); // Set up real-time updates
+            setupPetStatsListener();
         }
     });
 });

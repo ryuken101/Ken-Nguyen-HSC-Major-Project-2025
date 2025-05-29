@@ -72,6 +72,9 @@
             <span class="material-symbols--menu-rounded"></span>
             <h3 id="user_name"></h3>
             <h3 id="level">Level: 1</h3>
+            <div id="xp_progress">
+                <div id="xp_bar"></div>
+            </div>
             <h3 id="xp">XP: 0 / 10</h3>
         </nav>
         
@@ -111,18 +114,37 @@
                     </div>
                 </div>
             </div>
+
+            <div class="head_title">
+                <div class="left">
+                    <h1>Leaderboard</h1>
+                </div>
+            </div>
+            <div class="leaderboard-wrap">
+                <img src="Animation/kitten-sleeping.gif" alt="sprite-animation" height="200" width="200" class="leaderboard_kitten">
+                <div class="leaderboard-container">
+                    <div class="leaderboard-header">
+                        <span>Rank</span>
+                        <span>Name</span>
+                        <span>Level</span>
+                        <span>XP</span>
+                    </div>
+                    <div class="leaderboard-list" id="leaderboard-list">
+                        <!-- Leaderboard items will be inserted here -->
+                    </div>
+                </div>
+            </div>
         </main>
     </section>
     <!--Main -->
-
-
-
 
     <script type="module" defer src="userpage.js"></script>
     <script type="module" src="user_stats.js"></script>
     <script type="module" src="app.js"></script>
     <script type="module" src="theme.js"></script>
     <script type="module" src="auth-state.js"></script>
+    <script type="module" src="tasks.js"></script>
+    <script type="module" src="leaderboard.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
 </html>
