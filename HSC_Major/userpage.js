@@ -261,14 +261,27 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUserId) return;
     
     const userTasksRef = doc(db, "users", currentUserId, "data", "events");
+    const userStatsRef = doc(db, "users", currentUserId, "data", "stats");
     
+    // Listen for task changes
     onSnapshot(userTasksRef, (doc) => {
-      if (doc.exists()) {
-        tasks = doc.data().events || [];
-        renderTasks(tasks);
-      }
+        if (doc.exists()) {
+            tasks = doc.data().events || [];
+            renderTasks(tasks);
+        }
     });
-  }
+    
+    // Listen for stats changes
+    onSnapshot(userStatsRef, (doc) => {
+        if (doc.exists()) {
+            const statsData = doc.data();
+            level = statsData.level || 1;
+            xp = statsData.XP || 0;
+            updateLevelDisplay();
+            updateProgressBar(xp);
+        }
+    });
+}
 
   function renderTasks(tasksToRender) {
     taskList.innerHTML = '';
@@ -384,10 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-   
-    const percentage = Math.min(100, Math.max(0, (currentXP / xp_max) * 100));
+    // Ensure we don't exceed the max XP
+    const percentage = Math.min(100, (currentXP / xp_max) * 100);
     xp_bar.style.width = `${percentage}%`;
-  }
+    
+    // Update the XP text display
+    if (currentXpElement) {
+        currentXpElement.textContent = `XP: ${currentXP} / ${xp_max}`;
+    }
+}
 
   // Logout Function
   async function handleLogout(e) {

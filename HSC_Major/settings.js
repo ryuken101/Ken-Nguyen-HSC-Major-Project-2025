@@ -1,6 +1,7 @@
 import { getAuth, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
+
 const auth = getAuth();
 const db = getFirestore();
 
@@ -200,5 +201,4 @@ async function changePassword() {
         }
     }
 }
-
 

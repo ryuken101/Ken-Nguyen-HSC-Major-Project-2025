@@ -341,7 +341,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                     });
                 });
 
-                // Add event listeners to all complete buttons
+                // Event listeners to all complete buttons
                 dayEvents.forEach(event => {
                     const completeBtn = document.getElementById(`complete-${event.id}`);
                     if (completeBtn) {
@@ -384,15 +384,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 
         });
 
-        // Function to initialize or update user stats
-        async function updateUserStats(eventType) {
+        async function updateUserStats(eventType, action = 'complete') {
             if (!currentUserId) {
                 console.error("No user ID found");
                 throw new Error("User not authenticated");
             }
             
             const userStatsRef = doc(db, "users", currentUserId, "data", "stats");
-            console.log("Updating stats for event type:", eventType);
+            console.log("Updating stats for event type:", eventType, "Action:", action);
             
             try {
                 const docSnap = await getDoc(userStatsRef);
@@ -415,29 +414,47 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                     };
                 }
 
-                // Increment the specific stat
+                // Handle the action
                 if (statsData.hasOwnProperty(eventType)) {
-                    statsData[eventType] += 1;
-                    statsData.XP += 1;
-                    if (statsData.XP >= xp_max) {
+                    if (action === 'complete') {
+                        // Complete action - add XP
+                        statsData[eventType] += 1;
+                        statsData.XP += 1;
+                    } else if (action === 'delete') {
+                        // Delete action - subtract XP (but not below 0)
+                        statsData.XP = Math.max(0, statsData.XP - 1);
+                        
+                        // Check if we need to level down
+                        if (statsData.XP < 0 && statsData.level > 1) {
+                            statsData.level -= 1;
+                            statsData.XP = xp_max + statsData.XP; // Carry over negative XP to new level
+                        }
+                    }
+                    
+                    // Check level up (only for complete actions)
+                    if (action === 'complete' && statsData.XP >= xp_max) {
                         statsData.level += 1;
-                        statsData.XP = 0;
+                        statsData.XP = statsData.XP - xp_max; // Carry over excess XP
                         alert(`Congratulations! You have leveled up! You're now level ${statsData.level}`);
                     }
+                    
                     statsData.lastUpdated = new Date().toISOString();
                     console.log("New stats value:", statsData);
+                    
+                    // Save the updated stats
+                    await setDoc(userStatsRef, statsData);
+                    
+                    // Update local variables and UI
+                    level = statsData.level;
+                    xp = statsData.XP;
+                    updateDisplay();
+                    
+                    // Return the updated stats
+                    return statsData;
                 } else {
                     console.error("Invalid event type:", eventType);
                     throw new Error("Invalid event type");
                 }
-
-                await setDoc(userStatsRef, statsData);
-                level = statsData.level;
-                xp = statsData.XP;
-                updateDisplay();
-                showTaskCompleteNotification();
-                console.log("Stats document successfully written");
-                return true;
             } catch (error) {
                 console.error("Error in updateUserStats:", error);
                 throw error;
@@ -446,7 +463,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 
         function updateDisplay() {
             currentLevel.textContent = `Level: ${level}`;
-            currentXp.textContent = `XP: ${xp} / 10`;
+            currentXp.textContent = `XP: ${xp} / ${xp_max}`;
+            
+            // Update the XP bar visual representation
+            const xpBar = document.getElementById('xp-bar');
+            if (xpBar) {
+                const percentage = (xp / xp_max) * 100;
+                xpBar.style.width = `${percentage}%`;
+            }
         }
 
         function showTaskCompleteNotification() {
@@ -485,6 +509,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                         sleep: 0,
                         lastUpdated: new Date().toISOString()
                     });
+                    level = 1;
+                    xp = 0;
+                    updateDisplay();
                 }
             } catch (error) {
                 console.error("Error loading stats:", error);
@@ -710,8 +737,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             }
         }
 
-        // Add this function to show the overdue tasks modal
+        //Function to show the overdue tasks modal
         function showOverdueTasksModal(overdueTasks) {
+            const existingModal = document.getElementById('overdue-tasks-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
             const modal = document.createElement('div');
             modal.id = 'overdue-tasks-modal';
             modal.className = 'modal';
@@ -733,7 +765,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                                         <i class='bx bx-check-circle'></i> Complete
                                     </button>
                                     <button class="delete-overdue" data-id="${task.id}">
-                                        <i class='bx bx-trash'></i> Delete
+                                        <i class='bx bx-trash'></i> Delete (-1 XP)
                                     </button>
                                 </div>
                             </div>
@@ -749,19 +781,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             
             document.body.appendChild(modal);
             
-            // Add event listeners
             document.querySelectorAll('.complete-overdue').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    const taskId = parseInt(e.target.dataset.id);
+                    const taskId = parseInt(e.target.closest('.complete-overdue').dataset.id);
                     const taskIndex = events.findIndex(e => e.id === taskId);
                     
                     if (taskIndex !== -1) {
                         try {
                             // Update stats
-                            await updateUserStats(events[taskIndex].type);
+                            await updateUserStats(events[taskIndex].type, 'complete');
                             
                             // Mark as completed
                             events[taskIndex].completed = true;
+                            events = events.filter(e => e.id !== taskId);
                             await saveEvents();
                             
                             // Refresh UI
@@ -769,11 +801,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                             renderDraggableEvents();
                             showNotification('Task marked as completed');
                             
-                            // Close modal if no more overdue tasks
-                            const remainingOverdue = events.filter(e => 
-                                !e.completed && 
-                                new Date(e.date.split('-').join('-')) < new Date()
-                            );
+                            // Get remaining overdue tasks
+                            const remainingOverdue = getOverdueTasks();
                             
                             if (remainingOverdue.length === 0) {
                                 modal.remove();
@@ -791,41 +820,86 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             
             document.querySelectorAll('.delete-overdue').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
-                    const taskId = parseInt(e.target.dataset.id);
-                    events = events.filter(e => e.id !== taskId);
+                    if (!confirm('Are you sure you want to delete this overdue task? This will subtract 1 XP.')) {
+                        return;
+                    }
                     
-                    try {
-                        await saveEvents();
-                        renderCalendar();
-                        renderDraggableEvents();
-                        showNotification('Task deleted successfully');
-                        
-                        // Close modal if no more overdue tasks
-                        const remainingOverdue = events.filter(e => 
-                            !e.completed && 
-                            new Date(e.date.split('-').join('-')) < new Date()
-                        );
-                        
-                        if (remainingOverdue.length === 0) {
-                            modal.remove();
-                        } else {
-                            // Refresh modal
-                            showOverdueTasksModal(remainingOverdue);
+                    const taskId = parseInt(e.target.closest('.delete-overdue').dataset.id);
+                    const taskIndex = events.findIndex(e => e.id === taskId);
+                    
+                    if (taskIndex !== -1) {
+                        try {
+                            // Update stats (subtract XP)
+                            await updateUserStats(events[taskIndex].type, 'delete');
+                            
+                            // Remove the task
+                            events = events.filter(e => e.id !== taskId);
+                            await saveEvents();
+                            
+                            // Refresh UI
+                            renderCalendar();
+                            renderDraggableEvents();
+                            showNotification('Overdue task deleted (-1 XP)');
+                            
+                            // Get remaining overdue tasks
+                            const remainingOverdue = getOverdueTasks();
+                            
+                            if (remainingOverdue.length === 0) {
+                                modal.remove();
+                            } else {
+                                // Refresh modal
+                                showOverdueTasksModal(remainingOverdue);
+                            }
+                        } catch (error) {
+                            console.error("Error deleting overdue task:", error);
+                            showNotification("Error deleting task. Please try again.");
                         }
-                    } catch (error) {
-                        console.error("Error deleting overdue task:", error);
-                        showNotification("Error deleting task. Please try again.");
                     }
                 });
             });
             
-            document.getElementById('close-overdue-modal').addEventListener('click', () => {
-                modal.remove();
-            });
+            const closeButton = modal.querySelector('#close-overdue-modal');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
             
-            document.querySelector('.modal-overlay').addEventListener('click', () => {
-                modal.remove();
+            // close when clicking on the overlay
+            const overlay = modal.querySelector('.modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+        }
+
+        // Helper function to get overdue tasks
+        function getOverdueTasks() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            return events.filter(event => {
+                if (!event.date || event.completed) return false;
+                
+                const [year, month, day] = event.date.split('-');
+                const taskDate = new Date(year, month - 1, day);
+                taskDate.setHours(0, 0, 0, 0);
+                
+                return taskDate < today;
             });
+        }
+
+        function showTaskDeleteNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'task-delete-notification';
+            notification.innerHTML = `
+            <span class="material-symbols--check-circle"></span>
+            <p>Task completed! +1 XP</p>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 2000);
         }
 
     });
