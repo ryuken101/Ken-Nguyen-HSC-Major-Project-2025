@@ -2,26 +2,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>About Purrsue</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="images/website_logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-<body>
+<body class="about-body">
 
-    <!-- Navbar Section -->
+    <!-- Navbar Section-->
     <nav class="navbar">
         <div class="navbar_container">
-            <!-- Logo Section -->
             <a href="index.html" id="navbar_logo">
                 <img src="images/website_logo.png" alt="logo" class="website_logo">
             </a>
-            <!-- Hamburger Menu for Mobile -->
             <div class="navbar_toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </div>
-            <!-- Navigation Menu -->
             <ul class="navbar_menu">
                 <li class="navbar_item">
                     <a href="index.html" class="navbar_link">Home</a>
@@ -39,37 +37,43 @@
         </div>
     </nav>
 
+    <!-- Top orange tint background -->
+    <div class="orange-tint-bg"></div>
 
-    <!-- About Comapany Content -->
-    <div class="company">
-        <h1>Our Company</h1>
-        <div class="company_container">
-            <div class="company-content">
-                <div class="Clogo_container">
-                    <img src="images/company_logo.png" alt="logo" class="company_logo">
+    <!-- About Content -->
+    <div class="about-content">
+        <div class="about-section company-about">
+            <div class="about-container">
+                <div class="about-text">
+                    <h1>About Mangopie</h1>
+                    <p>Mangopie is a innovative company dedicated to designing applications that help clients improve various aspects of their lives. We create tools that blend functionality with engaging experiences to make personal development both effective and enjoyable.</p>
+                </div>
+                <div class="logo-container">
+                    <img src="images/company_logo.png" alt="Mangopie Logo" class="about-logo">
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section project-about">
+            <div class="about-container reverse">
+                <div class="about-text">
+                    <h1>About Purrsue</h1>
+                    <p>Purrsue is a web application designed to help users set, track, and accomplish personal goals in various areas of life, such as Health and Productivity. By gamifying the goal-tracking process, Purrsue offers users an engaging, interactive experience reminiscent of video games, where users can monitor their progress through skill-based statistics and are kept accountable by their virtual pet kitten, motivating users to stay on track with their personal development.</p>
+
+                </div>
+                <div class="logo-container">
+                    <img src="images/website_logo.png" alt="Purrsue Logo" class="about-logo">
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- About Project Content -->
-    <div class="project">
-        <h1>Our Project</h1>
-        <div class="project_container">
-            <div class="project-content">
-                <div class="Plogo_container">
-                    <img src="images/website_logo.png" alt="logo" class="project_logo">
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <div class="about-kitten">
-        <img src="Animation/kitten-idle.gif" alt="sprite animation" width="300" height="300">
+        <img src="Animation/kitten-idle.gif" alt="Purrsue kitten mascot" width="300" height="300">
     </div>
-     <!-- Footer Section -->
-     <footer class="footer">
+
+    <!-- Glass morphism footer -->
+    <footer class="about-footer">
         <div class="footer_container">
             <div class="footer_links">
                 <a href="index.html" class="footer_link">Home</a>
@@ -77,13 +81,8 @@
                 <a href="login.html" class="footer_link">Login</a>
                 <a href="signup.html" class="footer_link">Sign Up</a>
             </div>
-            <div class="footer_socials">
-                <a href="#" class="social_icon"><i class="fab fa-instagram"></i></a>
-            </div>
-            <p class="footer_copy">2025 Purrsue. All rights reserved.</p>
         </div>
     </footer>
-
 
     <script type="module" src="app.js" defer></script>
 </body>

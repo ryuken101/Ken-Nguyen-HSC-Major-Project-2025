@@ -158,7 +158,7 @@ async function changePassword() {
         
         console.log("Password updated in Firebase Auth successfully");
         
-        // Update Firestore with timestamp (optional)
+        // Update Firestore with timestamp 
         try {
             await updateDoc(doc(db, "users", user.uid), {
                 passwordLastChanged: new Date().toISOString()
@@ -166,13 +166,13 @@ async function changePassword() {
             console.log("Password change timestamp updated in Firestore");
         } catch (firestoreError) {
             console.error("Error updating Firestore timestamp:", firestoreError);
-            // This isn't critical, so we continue
+           
         }
         
         alert("Password changed successfully!");
         hidePasswordModal();
         
-        // Optional: Force logout and redirect to login page
+        //Force logout and redirect to login page
         setTimeout(() => {
             auth.signOut().then(() => {
                 window.location.href = 'login.html';

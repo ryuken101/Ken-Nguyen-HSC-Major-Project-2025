@@ -102,8 +102,7 @@ function renderRadarChart(statsData) {
     radarChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: 
-            ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
+            labels: ['Study', 'Physical Health', 'Sleep', 'Mental Health', 'Leisure'],
             datasets: [{
                 label: 'Stat Point',
                 data: [
@@ -118,12 +117,11 @@ function renderRadarChart(statsData) {
                 borderWidth: 2,
                 pointBackgroundColor: 'rgba(75, 192, 192, 1)',
                 pointRadius: 4,
-
-                
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false, 
             scales: {
                 r: {
                     angleLines: {
@@ -133,15 +131,33 @@ function renderRadarChart(statsData) {
                     suggestedMax: Math.max(
                         10, 
                         ...Object.values(statsData).map(val => typeof val === 'number' ? val : 0)
-                    ) + 2
+                    ) + 2,
+                    pointLabels: {
+                        font: {
+                            size: function(context) {
+                                // Adjust font size based on window width
+                                const width = window.innerWidth;
+                                return width < 600 ? 10 : 12;
+                            }
+                        }
+                    }
                 }
             },
-            
-            
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: function(context) {
+                                const width = window.innerWidth;
+                                return width < 600 ? 10 : 12;
+                            }
+                        }
+                    }
+                }
+            }
         }
     });
 }
-
 
 
 function setupRealTimeUpdates() {
@@ -161,13 +177,8 @@ function setupRealTimeUpdates() {
 function renderdoughnutChart(statsData) {
     const ctx = document.getElementById('doughnut_chart').getContext('2d');
 
-    // Destroy previous chart if it exists
     if (doughnutChart) {
         doughnutChart.destroy();
-    }
-
-    if (doughnutChart = null) {
-        console.log('HHUHHH');
     }
 
     doughnutChart = new Chart(ctx, {
@@ -201,13 +212,42 @@ function renderdoughnutChart(statsData) {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'top',
+                    labels: {
+                        font: {
+                            size: function(context) {
+                                const width = window.innerWidth;
+                                if (width < 480) return 8;
+                                if (width < 768) return 10;
+                                return 12;
+                            }
+                        },
+                        // Enable click events on legend items
+                        onClick: function(e, legendItem, legend) {
+                            const index = legendItem.datasetIndex;
+                            const ci = legend.chart;
+                            const meta = ci.getDatasetMeta(0);
+
+                            // Toggle visibility of the clicked segment
+                            meta.data[index].hidden = !meta.data[index].hidden;
+                            ci.update();
+                        }
+                    }
                 },
-            },
-            // Ensure the chart maintains aspect ratio
-            maintainAspectRatio: false
+            }
         }
     });
 }
+
+let resizeTimeout;
+window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(async function() {
+        if (auth.currentUser) {
+            await loadAndRenderStats();
+        }
+    }, 200); // Debounce for 200ms
+});

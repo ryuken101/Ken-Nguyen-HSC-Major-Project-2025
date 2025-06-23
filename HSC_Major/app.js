@@ -84,15 +84,41 @@ function showMessage(message, divId) {
     }, 5000);
 }
 
-// Submit Button
+// Sigup Functionality
 const submit = document.getElementById('submit_btn');
 if (submit) {
     submit.addEventListener("click", (event) => {
         event.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const fName = document.getElementById('fName').value;
-        const lName = document.getElementById('lName').value;
+        
+        // Sanitize all inputs
+        const email = sanitizeInput(document.getElementById('email').value.trim());
+        const password = document.getElementById('password').value; // Don't sanitize password
+        const fName = sanitizeInput(document.getElementById('fName').value.trim());
+        const lName = sanitizeInput(document.getElementById('lName').value.trim());
+
+        // Validate email format
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showMessage('Please enter a valid email address', 'signup_message');
+            return;
+        }
+
+        // Validate password strength
+        if (password.length < 8) {
+            showMessage('Password must be at least 8 characters long', 'signup_message');
+            return;
+        }
+
+        // Validate password match
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match', 'signup_message');
+            return;
+        }
+
+        // Validate name fields
+        if (!fName || !lName) {
+            showMessage('First and last name are required', 'signup_message');
+            return;
+        }
 
         // Passes account details
         createUserWithEmailAndPassword(auth, email, password)
@@ -126,6 +152,27 @@ if (submit) {
     });
 }
 
+const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+
+if (passwordInput && confirmPasswordInput) {
+    [passwordInput, confirmPasswordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (passwordInput.value && confirmPasswordInput.value) {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordInput.classList.add('password-mismatch');
+                    confirmPasswordInput.classList.remove('password-match');
+                } else {
+                    confirmPasswordInput.classList.add('password-match');
+                    confirmPasswordInput.classList.remove('password-mismatch');
+                }
+            } else {
+                confirmPasswordInput.classList.remove('password-mismatch', 'password-match');
+            }
+        });
+    });
+}
+
         
 
 // Login Functionality
@@ -133,8 +180,25 @@ const loginSubmitBtn = document.getElementById('login_submit_btn');
 if (loginSubmitBtn) {
     loginSubmitBtn.addEventListener("click", async (event) => {
         event.preventDefault();
-        const email = document.getElementById('login_email').value;
-        const password = document.getElementById('login_password').value;
+        // Sanitize inputs
+        const email = sanitizeInput(document.getElementById('login_email').value.trim());
+        const password = document.getElementById('login_password').value; // Don't sanitize password
+
+        // Validate email format
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showMessage('Please enter a valid email address', 'login_message');
+            return;
+        }
+
+        // Validate password presence
+        if (!password) {
+            showMessage('Please enter your password', 'login_message');
+            return;
+        }
+
+        if (!checkRateLimit(email)) {
+            return;
+        }
 
         try {
             // Set persistence before signing in
@@ -188,20 +252,74 @@ if (loginSubmitBtn) {
 if (window.location.pathname.includes('reset-password.html')) {
     document.getElementById('reset-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('reset_email').value.trim();
+        const email = sanitizeInput(document.getElementById('reset_email').value.trim());
+
+        // Validate email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showMessage('Please enter a valid email address', 'reset_message');
+            return;
+        }
 
         try {
             await sendPasswordResetEmail(auth, email);
-            showMessage('Reset link sent! Check your email.', 'reset_message');
+            showMessage('If an account exists with this email, a reset link has been sent.', 'reset_message');
         } catch (error) {
-            const message = error.code === 'auth/user-not-found' 
-                ? 'No account found with this email.' 
-                : 'Error sending reset link.';
-            showMessage(message, 'reset_message');
+            // Generic message to avoid email enumeration
+            showMessage('If an account exists with this email, a reset link has been sent.', 'reset_message');
+            console.error("Password reset error:", error);
         }
     });
 }
 
+const loginAttempts = {};
+const MAX_ATTEMPTS = 5;
+const ATTEMPT_WINDOW = 15 * 60 * 1000; // 15 minutes
+
+function checkRateLimit(email) {
+    const now = Date.now();
+    if (!loginAttempts[email]) {
+        loginAttempts[email] = { count: 1, timestamp: now };
+        return true;
+    }
+    
+    // Reset if window has passed
+    if (now - loginAttempts[email].timestamp > ATTEMPT_WINDOW) {
+        loginAttempts[email] = { count: 1, timestamp: now };
+        return true;
+    }
+    
+    // Increment count
+    loginAttempts[email].count++;
+    
+    if (loginAttempts[email].count > MAX_ATTEMPTS) {
+        const timeLeft = Math.ceil((ATTEMPT_WINDOW - (now - loginAttempts[email].timestamp)) / 60000);
+        alert(`Too many attempts. Please try again in ${timeLeft} minutes.`);
+        return false;
+    }
+    
+    return true;
+}
+
+
+// Input sanitization function
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return input;
+    
+    // Remove HTML tags to prevent XSS
+    input = input.replace(/<[^>]*>?/gm, '');
+    
+    // Escape special characters that could lead to injection
+    const escapeMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '/': '&#x2F;'
+    };
+    
+    return input.replace(/[&<>"'/]/g, (match) => escapeMap[match]);
+}
 
 // Video Replay
 

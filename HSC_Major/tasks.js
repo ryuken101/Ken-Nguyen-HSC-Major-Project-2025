@@ -230,13 +230,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                         if (eventIndex !== -1) {
                             // Update the event with the scheduled date
                             events[eventIndex].date = dayElement.dataset.date;
-                            events[eventIndex].isScheduled = true; // Add this flag
+                            events[eventIndex].isScheduled = true; 
                             
                             try {
                                 await saveEvents();
                                 checkEventNotifications();
                                 renderCalendar();
-                                renderDraggableEvents(); // This will now filter out scheduled tasks
+                                renderDraggableEvents(); // This will filter out scheduled tasks
                                 dayElement.click();
                                 showNotification(`Event scheduled for ${formatDateForDisplay(dayElement.dataset.date)}`);
                             } catch (error) {
@@ -360,6 +360,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                                 console.log("Event removed and saved");
                                 
                                 // Update UI
+                                showTaskCompleteNotification();
                                 renderCalendar();
                                 showEventDetails(dateStr);
                                 renderDraggableEvents();
@@ -420,22 +421,23 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
                         // Complete action - add XP
                         statsData[eventType] += 1;
                         statsData.XP += 1;
+                        
+                        // Check level up (only for complete actions)
+                        if (statsData.XP >= xp_max) {
+                            statsData.level += 1;
+                            statsData.XP = statsData.XP - xp_max; // Carry over excess XP
+                            alert(`Congratulations! You have leveled up! You're now level ${statsData.level}`);
+                        }
                     } else if (action === 'delete') {
                         // Delete action - subtract XP (but not below 0)
                         statsData.XP = Math.max(0, statsData.XP - 1);
                         
-                        // Check if we need to level down
-                        if (statsData.XP < 0 && statsData.level > 1) {
+                        // Check if user levels down (if XP hits 0 and level > 1)
+                        if (statsData.XP <= 0 && statsData.level > 1) {
                             statsData.level -= 1;
-                            statsData.XP = xp_max + statsData.XP; // Carry over negative XP to new level
+                            statsData.XP = xp_max - 1; // Reset XP to max-1 of the previous level
+                            alert(`You lost a level! You're now level ${statsData.level}`);
                         }
-                    }
-                    
-                    // Check level up (only for complete actions)
-                    if (action === 'complete' && statsData.XP >= xp_max) {
-                        statsData.level += 1;
-                        statsData.XP = statsData.XP - xp_max; // Carry over excess XP
-                        alert(`Congratulations! You have leveled up! You're now level ${statsData.level}`);
                     }
                     
                     statsData.lastUpdated = new Date().toISOString();
@@ -483,7 +485,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             document.body.appendChild(notification);
             
             setTimeout(() => notification.remove(), 2000);
-          }
+        }
+
+        function showTaskDeleteNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'task-delete-notification';
+            notification.innerHTML = `
+              <span class="charm--cross"></span>
+              <p>Task Deleted. -1 XP</p>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 2000);
+        }
 
         async function loadUserStats() {
             if (!currentUserId) return;
@@ -719,25 +733,28 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 
 
         function checkForOverdueTasks() {
+            // Check if  on tasks.html (skip if not)
+            const isTasksPage = window.location.pathname.includes('tasks.html');
+            if (!isTasksPage) return; // Exit if not on tasks.html
+
             const today = new Date();
             today.setHours(0, 0, 0, 0); // Set to start of day for comparison
             
             const overdueTasks = events.filter(event => {
-                if (!event.date) return false;
+                if (!event.date || event.completed) return false;
                 
                 const [year, month, day] = event.date.split('-');
                 const taskDate = new Date(year, month - 1, day);
                 taskDate.setHours(0, 0, 0, 0);
                 
-                return taskDate < today && !event.completed;
+                return taskDate < today;
             });
             
             if (overdueTasks.length > 0) {
                 showOverdueTasksModal(overdueTasks);
             }
         }
-
-        //Function to show the overdue tasks modal
+        
         function showOverdueTasksModal(overdueTasks) {
             const existingModal = document.getElementById('overdue-tasks-modal');
             if (existingModal) {
@@ -781,100 +798,116 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             
             document.body.appendChild(modal);
             
-            document.querySelectorAll('.complete-overdue').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const taskId = parseInt(e.target.closest('.complete-overdue').dataset.id);
-                    const taskIndex = events.findIndex(e => e.id === taskId);
-                    
-                    if (taskIndex !== -1) {
-                        try {
-                            // Update stats
-                            await updateUserStats(events[taskIndex].type, 'complete');
-                            
-                            // Mark as completed
-                            events[taskIndex].completed = true;
-                            events = events.filter(e => e.id !== taskId);
-                            await saveEvents();
-                            
-                            // Refresh UI
-                            renderCalendar();
-                            renderDraggableEvents();
-                            showNotification('Task marked as completed');
-                            
-                            // Get remaining overdue tasks
-                            const remainingOverdue = getOverdueTasks();
-                            
-                            if (remainingOverdue.length === 0) {
-                                modal.remove();
-                            } else {
-                                // Refresh modal
-                                showOverdueTasksModal(remainingOverdue);
-                            }
-                        } catch (error) {
-                            console.error("Error completing overdue task:", error);
-                            showNotification("Error completing task. Please try again.");
-                        }
-                    }
-                });
+            // Use event delegation for dynamic elements
+            document.addEventListener('click', handleOverdueModalClick);
+            
+            // Close when clicking overlay
+            modal.querySelector('.modal-overlay')?.addEventListener('click', () => {
+                modal.remove();
+                document.removeEventListener('click', handleOverdueModalClick);
             });
             
-            document.querySelectorAll('.delete-overdue').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    if (!confirm('Are you sure you want to delete this overdue task? This will subtract 1 XP.')) {
-                        return;
-                    }
-                    
-                    const taskId = parseInt(e.target.closest('.delete-overdue').dataset.id);
-                    const taskIndex = events.findIndex(e => e.id === taskId);
-                    
-                    if (taskIndex !== -1) {
-                        try {
-                            // Update stats (subtract XP)
-                            await updateUserStats(events[taskIndex].type, 'delete');
-                            
-                            // Remove the task
-                            events = events.filter(e => e.id !== taskId);
-                            await saveEvents();
-                            
-                            // Refresh UI
-                            renderCalendar();
-                            renderDraggableEvents();
-                            showNotification('Overdue task deleted (-1 XP)');
-                            
-                            // Get remaining overdue tasks
-                            const remainingOverdue = getOverdueTasks();
-                            
-                            if (remainingOverdue.length === 0) {
-                                modal.remove();
-                            } else {
-                                // Refresh modal
-                                showOverdueTasksModal(remainingOverdue);
-                            }
-                        } catch (error) {
-                            console.error("Error deleting overdue task:", error);
-                            showNotification("Error deleting task. Please try again.");
-                        }
-                    }
-                });
+            // Close when clicking close button
+            modal.querySelector('#close-overdue-modal')?.addEventListener('click', () => {
+                modal.remove();
+                document.removeEventListener('click', handleOverdueModalClick);
             });
-            
-            const closeButton = modal.querySelector('#close-overdue-modal');
-            if (closeButton) {
-                closeButton.addEventListener('click', () => {
-                    modal.remove();
-                });
+        }
+
+        // Function to handle modal clicks via delegation
+        function handleOverdueModalClick(e) {
+            // Handle complete button
+            if (e.target.closest('.complete-overdue')) {
+                const taskId = parseInt(e.target.closest('.complete-overdue').dataset.id);
+                handleCompleteOverdueTask(taskId);
             }
             
-            // close when clicking on the overlay
-            const overlay = modal.querySelector('.modal-overlay');
-            if (overlay) {
-                overlay.addEventListener('click', () => {
-                    modal.remove();
-                });
+            // Handle delete button
+            if (e.target.closest('.delete-overdue')) {
+                const taskId = parseInt(e.target.closest('.delete-overdue').dataset.id);
+                handleDeleteOverdueTask(taskId);
             }
         }
 
-        // Helper function to get overdue tasks
+        // Separate function to handle completing overdue tasks
+        async function handleCompleteOverdueTask(taskId) {
+            const taskIndex = events.findIndex(e => e.id === taskId);
+            
+            if (taskIndex !== -1) {
+                try {
+                    // Update stats
+                    await updateUserStats(events[taskIndex].type, 'complete');
+                    
+                    // Mark as completed
+                    events[taskIndex].completed = true;
+                    events = events.filter(e => e.id !== taskId);
+                    await saveEvents();
+                    
+                    // Refresh UI
+                    renderCalendar();
+                    renderDraggableEvents();
+                    showNotification('Task marked as completed');
+                    
+                    // Get remaining overdue tasks
+                    const remainingOverdue = getOverdueTasks();
+                    
+                    const modal = document.getElementById('overdue-tasks-modal');
+                    if (remainingOverdue.length === 0 && modal) {
+                        modal.remove();
+                        document.removeEventListener('click', handleOverdueModalClick);
+                    } else if (modal) {
+                        // Refresh modal
+                        showOverdueTasksModal(remainingOverdue);
+                    }
+                } catch (error) {
+                    console.error("Error completing overdue task:", error);
+                    showNotification("Error completing task. Please try again.");
+                }
+            }
+        }
+
+        // Separate function to handle deleting overdue tasks
+        async function handleDeleteOverdueTask(taskId) {
+            if (!confirm('Are you sure you want to delete this overdue task? This will subtract 1 XP.')) {
+                return;
+            }
+            
+            const taskIndex = events.findIndex(e => e.id === taskId);
+            
+            if (taskIndex !== -1) {
+                try {
+                    // Update stats (subtract XP)
+                    await updateUserStats(events[taskIndex].type, 'delete');
+                    
+                    // Remove the task
+                    events = events.filter(e => e.id !== taskId);
+                    await saveEvents();
+                    
+                    // Refresh UI
+                    showTaskDeleteNotification();
+                    renderCalendar();
+                    renderDraggableEvents();
+                    showNotification('Overdue task deleted (-1 XP)');
+                    
+                    // Get remaining overdue tasks
+                    const remainingOverdue = getOverdueTasks();
+                    
+                    const modal = document.getElementById('overdue-tasks-modal');
+                    if (remainingOverdue.length === 0 && modal) {
+                        modal.remove();
+                        document.removeEventListener('click', handleOverdueModalClick);
+                    } else if (modal) {
+                        // Refresh modal
+                        showOverdueTasksModal(remainingOverdue);
+                    }
+                } catch (error) {
+                    console.error("Error deleting overdue task:", error);
+                    showNotification("Error deleting task. Please try again.");
+                }
+            }
+        }
+
+        //function to get overdue tasks
         function getOverdueTasks() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -890,16 +923,5 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
             });
         }
 
-        function showTaskDeleteNotification() {
-            const notification = document.createElement('div');
-            notification.className = 'task-delete-notification';
-            notification.innerHTML = `
-            <span class="material-symbols--check-circle"></span>
-            <p>Task completed! +1 XP</p>
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.remove(), 2000);
-        }
 
     });

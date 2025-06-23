@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     colorChange(pinkToggle, "pink");
     colorChange(amberToggle, "amber");
 
-
-
-
 })
 
 function colorChange(button, color) {

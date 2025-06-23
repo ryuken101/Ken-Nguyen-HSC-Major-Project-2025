@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Ensure we don't exceed the max XP
+    // Ensure do not exceed the max XP
     const percentage = Math.min(100, (currentXP / xp_max) * 100);
     xp_bar.style.width = `${percentage}%`;
     
