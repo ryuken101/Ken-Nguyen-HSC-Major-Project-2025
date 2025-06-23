@@ -905,7 +905,6 @@
 
 
 .bottom-btn:hover {
-    background-color: var(--purple);
     box-shadow: 0 0 0 5px #f3e6ff;
     color: #fff;
 }
