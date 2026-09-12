@@ -1,4 +1,4 @@
-# Purrsue 🐾
+# Purrsue 
 
 **Purrsue** is a gamified goal-tracking web app built for the HSC Software Engineering Major Project. It helps users set, schedule, and complete personal goals across areas like study, physical health, sleep, mental health, and leisure — turning the process into a game by raising a virtual pet as a reward for staying on track.
 
